@@ -3,8 +3,11 @@
 const express = require("express");
 const router = express.Router();
 
-const adminController = require("../controllers/adminController");
+const healthcheckController = require("../controllers/healthcheckController");
+router.get("/healthcheck", healthcheckController.healthcheck);
 
-router.get("/healthcheck", adminController.healthcheck);
+const resetpointsController = require("../controllers/resetpointsController");
+router.post("/resetpoints", resetpointsController.resetpoints);
+
 
 module.exports = router;

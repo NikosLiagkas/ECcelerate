@@ -81,6 +81,6 @@ def generate_outlets(outlets_per_point: int = 2):
     print(F"Created {outlets_per_point*len(point_ids)} outlets with ids : {outlet_ids}")
 
 
-generate_outlets()
+#generate_outlets()
 # generate_points()
 # generate_stations()

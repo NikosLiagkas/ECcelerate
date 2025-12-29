@@ -19,7 +19,7 @@ CREATE TYPE vehicle_types AS ENUM (
 );
 
 CREATE TYPE providers AS ENUM (
-    'DEI',
+    'dei',
     'bombastic_electric',
     'big_energy'
 );
@@ -229,7 +229,7 @@ CREATE TABLE gives_rating (
 CREATE INDEX idx_vehicle_driver_id      ON vehicle(driver_id);
 CREATE INDEX idx_charger_station_id     ON charger(station_id);
 CREATE INDEX idx_payment_driver_id      ON payment(driver_id);
-CREATE INDEX idx_payment_charging_id      ON payment(charge_id);
+CREATE INDEX idx_payment_charging_id    ON payment(charge_id);
 CREATE INDEX idx_charging_driver_id     ON charging(driver_id);
 CREATE INDEX idx_charging_vehicle_lp    ON charging(license_plates);
 CREATE INDEX idx_charging_station_id    ON charging(station_id);

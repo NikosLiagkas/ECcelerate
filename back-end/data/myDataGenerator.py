@@ -1,6 +1,7 @@
 import csv
 import random
 import string
+from datetime import datetime, timedelta
 
 
 def generate_drivers():
@@ -276,7 +277,268 @@ def generate_vehicles():
     print(f"vehicles.csv generated with {len(vehicles)} vehicles")
 
 
+def generate_charging():
+    # LOAD DATA
+    # charging has 3 foreign keys, first we have to load the data from the 3 csvs
+    drivers = []
+    vehicles = {}
+    stations = []
+    
+    # I dont have the driver_id in drivers
+    # but I have 24 drivers and the id is 1-24
+    # so it is ok to do it like that
+    with open("drivers.csv", newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for i, row in enumerate(reader, start=1): 
+            drivers.append(i) 
 
+    with open("vehicles.csv", newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            vehicles[row["driver_id"]] = {
+                "license_plates": row["license_plates"],
+                "battery_size": int(row["battery_size"])
+            }
+    with open("stations.csv", newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for i, row in enumerate(reader, start=1):
+            stations.append({
+                "station_id": i,
+                "price_per_kwh": float(row["price_per_kwh"])
+            })
+            
+    # GENERATE CHARGING
+    charging = []
+    base_date = datetime(2025, 1, 1)
+    
+    for driver_id in drivers:
+        license_plate = vehicles[str(driver_id)]["license_plates"]
+        num_charges = random.randint(1,4)
+        
+        for i in range(num_charges):
+            station = random.choice(stations)
+            station_id = station["station_id"]
+            kwh_price = station["price_per_kwh"]
+            
+            start_soc = random.randint(10, 60)
+            # If it goes over 100% it will just pick 100
+            end_soc = min(start_soc + random.randint(10,80), 100)
+            soc_charged = end_soc - start_soc
+            
+            # We take the battery size form each vehicle 
+            # and calculate the kwh needed 
+            battery_size = vehicles[str(driver_id)]["battery_size"]
+            kwh_needed = round((soc_charged/100)*battery_size, 2)
+            price = round(kwh_needed * kwh_price, 2)
+            
+            connection_time = base_date + timedelta(
+                days = random.randint(0,180),
+                hours = random.randint(0,23),
+                minutes = random.randint(0,59)
+            ) 
+            
+            duration_minutes = random.randint(30,180)
+            disconnection_time = connection_time + timedelta(minutes=duration_minutes)
+            
+            charging.append([
+                connection_time.strftime("%Y-%m-%d %H:%M:%S"),
+                disconnection_time.strftime("%Y-%m-%d %H:%M:%S"),
+                start_soc,
+                end_soc,
+                kwh_needed,
+                kwh_price,
+                price,
+                driver_id,
+                license_plate,
+                station_id
+            ])
+            
+    with open("charging.csv", "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            "connection_time",
+            "disconnection_time",
+            "start_soc",
+            "end_soc",
+            "kwh_needed",
+            "kwh_price",
+            "price",
+            "driver_id",
+            "license_plates",
+            "station_id"
+        ])
+        writer.writerows(charging)
+
+    print(f"charging.csv generated with {len(charging)} charging sessions")
+        
+            
+def generate_payments():
+    payments = []
+    
+    with open("charging.csv", newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        
+        for charge_id, row in enumerate(reader, start=1):
+            original_price = round(float(row["price"]), 2)
+            price_paid = original_price
+            driver_id = int(row["driver_id"])
+            
+            # In 70% of payments points were not used
+            # In the other 30% because every credit_point used
+            # equals to 1euro it is subtracted from the price_paid
+            if random.random()<0.7 :
+                points_used=0
+            else:
+                max_points = int(original_price)
+                if max_points>0:
+                    points_used = random.randint(1, max_points)
+                    price_paid = round(original_price - points_used, 2)
+                else: points_used = 0
+            
+            # The payment will happen almost automatically after the charging is finished
+            disconnection_time = datetime.strptime(
+                row["disconnection_time"],
+                "%Y-%m-%d %H:%M:%S"
+            )
+
+            paid_at = disconnection_time + timedelta(minutes=random.randint(1, 5))
+            
+            payments.append([
+                price_paid,
+                paid_at.strftime("%Y-%m-%d %H:%M:%S"),
+                points_used,
+                driver_id,
+                charge_id
+            ])
+
+    with open("payments.csv", "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            "price_paid",
+            "paid_at",
+            "points_used",
+            "driver_id",
+            "charge_id"
+        ])
+        writer.writerows(payments)
+
+    print(f"payment.csv generated with {len(payments)} payments")
+    
+    
+def generate_reservations():
+    reservations = []
+    drivers = []
+    chargers = []
+    
+    with open("drivers.csv", newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for i, row in enumerate(reader, start=1): 
+            drivers.append(i)
+            
+    with open("chargers.csv", newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for i, row in enumerate(reader, start=1): 
+            chargers.append(i)
+            
+    # same logic as generate_chargings basically
+    base_date = datetime(2025, 1, 1)
+
+    for driver_id in drivers:
+        num_reservations = random.randint(0,3)
+        
+        for i in range(num_reservations):
+            charger_id = random.choice(chargers)
+                 
+            reservation_start = base_date + timedelta(
+                days = random.randint(0,180),
+                hours = random.randint(0,23),
+                minutes = random.randint(0,59)
+            ) 
+            
+            duration_minutes = random.randint(15,120)
+            reservation_end = reservation_start + timedelta(minutes = duration_minutes)
+            
+            # Every minute costs 10 cents
+            # Every 10 mins --> 1 euro
+            # Every Hour -----> 6 euros
+            reservation_price = round(duration_minutes*0.1, 2)
+            
+            reservations.append([
+                reservation_price,
+                reservation_start.strftime("%Y-%m-%d %H:%M:%S"),
+                reservation_end.strftime("%Y-%m-%d %H:%M:%S"),
+                driver_id,
+                charger_id
+            ])
+    
+    with open("reserves_position.csv", "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            "reservation_price",
+            "reservation_start_time",
+            "reservation_end_time",
+            "driver_id",
+            "charger_id"
+        ])
+        writer.writerows(reservations)
+
+    print(f"reserves_position.csv generated with {len(reservations)} reservations")
+
+
+def generate_ratings():
+    ratings = []
+    drivers = []
+    stations = []
+    used_stations = {}
+    
+    rating_values = [1, 2, 3, 4, 5]
+    rating_weights = [1, 4, 10, 35, 50]
+    
+    with open("drivers.csv", newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for i, row in enumerate(reader, start=1): 
+            drivers.append(i)
+            
+    with open("stations.csv", newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for i, row in enumerate(reader, start=1): 
+            stations.append(i)
+            
+    with open("charging.csv", newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            driver_id = int(row["driver_id"])
+            station_id = int(row["station_id"])
+            used_stations.setdefault(driver_id, set()).add(station_id)
+
+    for driver_id, stations in used_stations.items():
+        num_ratings = random.randint(0, len(stations))
+        rated_stations = random.sample(list(stations), num_ratings)
+
+        for station_id in rated_stations:
+            rating = random.choices(
+                rating_values,
+                weights=rating_weights,
+                k=1
+            )[0]
+
+            ratings.append([rating, driver_id, station_id])
+            
+    with open("gives_rating.csv", "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            "rating",
+            "driver_id",
+            "station_id"
+        ])
+        writer.writerows(ratings)
+
+    print(f"gives_rating.csv generated with {len(ratings)} ratings")                       
+            
+    
+    
+    
+    
 
 ################################################    
 #generate_drivers()
@@ -285,14 +547,17 @@ def generate_vehicles():
 ################################################################################################
 # After generating stations to generate the chargers, we need have to the station_id for each charger
 # To do that you must run this command in your bash terminal 
-# " psql -U postgres -d SoftengDB " (SoftengDB is my DB name, fill whatever the name of your DB is)
+# " psql -U postgres -d SoftengDB " 
+# (postgres is my name, SoftengDB is my DB name, fill whatever names you have)
 # put your password
 # then run this command : 
 # " \copy (SELECT station_id, num_chargers FROM station) TO 'stations_for_chargers.csv' CSV HEADER " 
 # and you will have how many chargers each station has in stations_for_chargers.csv
 ################################################################################################
+
 #generate_chargers()
-
-generate_vehicles()
-
-
+#generate_vehicles()
+#generate_charging()
+#generate_payments()
+#generate_reservations()
+#generate_ratings()

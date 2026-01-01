@@ -7,7 +7,7 @@ const RESET_FILE = "./data/parts1234.json";
 exports.initialisePoints = async () => {
 
     // Empty the tables to repopulate 
-    await pool.query("TRUNCATE TABLE outlets, points, stations RESTART IDENTITY CASCADE");
+    await pool.query("TRUNCATE TABLE charger, station RESTART IDENTITY CASCADE");
 
     const raw = fs.readFileSync(RESET_FILE, "utf8");
 
@@ -18,59 +18,61 @@ exports.initialisePoints = async () => {
     return array[Math.floor(Math.random() * array.length)];
     }
 
-    const providers = ["Picachu", "Best Energy", "Bombastic Electric", "Zeus"]
-    const prices = [0.4300, 0.5200, 0.4700, 0.5600]
-    const caps = [20, 22, 50]
-    const connectorType = ["CCS2" ,"CHAdeMO", "Type 2"];
-    const pointStatus = ["available", "charging", "reserved", "malfunction", "offline"];
-    const outletStatus = ["operational", "faulted"];
+    const providers = ["dei", "bombastic_electric", "big_energy"]
+    const caps = [75, 100, 150]
+    const status = ["available", "charging", "reserved", "malfunction", "offline"];
+    const areas = [
+                    "Athens",
+                    "Piraeus",
+                    "Marousi",
+                    "Kallithea",
+                    "Nea Smyrni",
+                    "Chalandri",
+                    "Glyfada",
+                    "Peristeri",
+                    "Filadelfeia",
+                    "Ilion",
+                    "Mosxato",
+                    "Ano Patisia"
+                ]
 
-
+    
     for(const station of stations){
 
         const stationDetails =await pool.query(
-            `INSERT INTO stations (id, lon, lat, address, name, provider, price_per_kwh)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
-        RETURNING id`,
+        `INSERT INTO station (station_id, num_chargers, lon, lat, provider, price_per_kwh, address_street, address_number, postal_code, area)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        RETURNING station_id`,
         [
-            station.id,                 
+            station.id,
+            station.stations.length,                 
             station.longitude,
             station.latitude,
-            station.address,
-            station.name,
             randomFrom(providers),
-            randomFrom(prices)
+            Number((Math.random() * 0.4 + 0.2).toFixed(2)),
+            station.address.slice(0, 50),
+            0,
+            Math.floor(Math.random() * (19999 - 11111 + 1)) + 11111,
+            randomFrom(areas)
         ]
         );
 
-        const stationId = stationDetails.rows[0].id;
-        for (const point of station.stations) {
-            const pointDetails = await pool.query(
-                `INSERT INTO points (id, station_id, cap, status)
-                VALUES ($1, $2, $3, $4)
-                RETURNING id`,
+        const stationId = stationDetails.rows[0].station_id;
+        let count = 1;
+        for (const charger of station.stations) {
+            const chargerDetails = await pool.query(
+                `INSERT INTO charger (charger_id, status, cap, charger_number, station_id)
+                VALUES ($1, $2, $3, $4, $5)
+                RETURNING charger_id`,
                 [
-                    point.id,                
-                    stationId,
+                    charger.id,                
+                    randomFrom(status),
                     randomFrom(caps),
-                    randomFrom(pointStatus)
+                    count,
+                    stationId
                 ]
             );
-
-            const pointId = pointDetails.rows[0].id;
-            for (const outlet of point.outlets) {
-                const outletDetails = await pool.query(
-                    `INSERT INTO outlets (id, point_id, type, status)
-                    VALUES ($1, $2, $3, $4)`,
-                    [
-                        outlet.id,
-                        pointId,
-                        randomFrom(connectorType),
-                        randomFrom(outletStatus)
-                    ]
-                )
-            }
-
+            count += 1;
         }
     }
 }

@@ -10,7 +10,7 @@ exports.getHealthStats = async () =>{
             COUNT(*) AS n_charge_points,
             COUNT(*) FILTER (WHERE status <> 'offline') AS n_charge_points_online,
             COUNT(*) FILTER (WHERE status = 'offline') AS n_charge_points_offline
-            FROM points;`);        
+            FROM charger;`);        
         
         return {
             n_charge_points: result.rows[0].n_charge_points,

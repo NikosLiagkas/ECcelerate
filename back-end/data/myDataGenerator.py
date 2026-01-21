@@ -59,7 +59,7 @@ def generate_drivers():
         ])
         writer.writerows(drivers)
 
-    print("drivers.csv generated with 25 drivers")
+    print("drivers.csv generated with 24 drivers")
     
 
 def generate_stations():

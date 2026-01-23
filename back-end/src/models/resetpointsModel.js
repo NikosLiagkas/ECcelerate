@@ -1,17 +1,11 @@
 
 
 const { pool } = require("../config/db");
-const fs = require("fs");
-const RESET_FILE = "./data/parts1234.json";
 
-exports.initialisePoints = async () => {
+exports.initialiseChargers = async (stations) => {
 
     // Empty the tables to repopulate 
     await pool.query("TRUNCATE TABLE charger, station RESTART IDENTITY CASCADE");
-
-    const raw = fs.readFileSync(RESET_FILE, "utf8");
-
-    const stations = JSON.parse(raw);
 
     // Random values to initialise stations
     function randomFrom(array) {
@@ -21,21 +15,6 @@ exports.initialisePoints = async () => {
     const providers = ["dei", "bombastic_electric", "big_energy"]
     const caps = [75, 100, 150]
     const status = ["available", "charging", "reserved", "malfunction", "offline"];
-    const areas = [
-                    "Athens",
-                    "Piraeus",
-                    "Marousi",
-                    "Kallithea",
-                    "Nea Smyrni",
-                    "Chalandri",
-                    "Glyfada",
-                    "Peristeri",
-                    "Filadelfeia",
-                    "Ilion",
-                    "Mosxato",
-                    "Ano Patisia"
-                ]
-
     
     for(const station of stations){
 
@@ -52,8 +31,8 @@ exports.initialisePoints = async () => {
             Number((Math.random() * 0.4 + 0.2).toFixed(2)),
             station.address.slice(0, 50),
             0,
-            Math.floor(Math.random() * (19999 - 11111 + 1)) + 11111,
-            randomFrom(areas)
+            9999,
+            "Attika"
         ]
         );
 

@@ -1,0 +1,37 @@
+const express = require("express");
+const path = require("path");
+
+const app = express();
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/", (req, res) => {
+  res.render("home");
+});
+
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
+app.get("/user", (req, res) => {
+  res.render("user");
+});
+
+app.get("/charge", (req, res) => {
+  res.render("charge");
+});
+
+app.get("/balance", (req, res) => {
+  res.render("balance");
+});
+
+app.get("/balance/history", (req, res) => {
+    res.render("balance-history");
+  });
+
+app.listen(3000, () => {
+  console.log("Frontend running at http://localhost:3000");
+});

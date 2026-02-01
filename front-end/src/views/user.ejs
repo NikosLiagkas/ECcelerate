@@ -1,21 +1,159 @@
-<%- include("partials/header", { title: "User Page" }) %>
+<%- include("partials/header", { title: "User Profile" }) %>
 
-<h1 class="page-title">User Profile</h1>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<section class="card">
-  <p><strong>Username:</strong> demo_user</p>
-  <p><strong>Email:</strong> demo@mail.com</p>
-  <p><strong>Balance:</strong> 25.00 €</p>
-  <p><strong>Credit Points:</strong> 120</p>
+<section class="wrapper">
+  <h1 class="page-title">User Profile</h1>
+
+  <div class="card card-medium">
+    <h3>Account Information</h3>
+  
+    <div class="info-grid">
+      <div class="info-label">Username</div>
+      <div class="info-value">demo_user</div>
+  
+      <div class="info-label">Email</div>
+      <div class="info-value">demo@mail.com</div>
+  
+      <div class="info-label">Name</div>
+      <div class="info-value">John Doe</div>
+    </div>
+  </div>
+  
+
+  <div class="card card-wide card-table">
+    <div class="card-header-with-button" >
+        <h3>My Vehicles</h3>
+
+        <div class="actions-center">
+            <a href="/user/addVehicle" class="btn btn-outline">
+            Add Vehicle
+            </a>
+        </div>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>License Plates</th>
+          <th>Type</th>
+          <th>Model</th>
+          <th>Battery Size (kWh)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ΙΚΥ-1234</td>
+          <td>Car</td>
+          <td>Tesla Model 3</td>
+          <td>60</td>
+        </tr>
+        <tr>
+          <td>ΖΝΑ-5678</td>
+          <td>Motorcycle</td>
+          <td>Zero SR/F</td>
+          <td>14</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card card-wide card-table">
+    <h3>User Statistics</h3>
+  
+    <div class="stats-grid">
+      <div class="stat-box">
+        <h4>Charging Sessions per Month</h4>
+        <canvas id="sessionsChart"></canvas>
+      </div>
+  
+      <div class="stat-box">
+        <h4>Total Energy Charged (kWh)</h4>
+        <canvas id="energyChart"></canvas>
+      </div>
+  
+      <div class="stat-box">
+        <h4>Money Spent (€)</h4>
+        <canvas id="moneyChart"></canvas>
+      </div>
+    </div>
+  </div>
+  
+
 </section>
 
-<section class="card">
-  <h3>Statistics</h3>
-  <ul>
-    <li>Total charging sessions: 8</li>
-    <li>Total kWh charged: 142.5 kWh</li>
-    <li>Total money spent: 38.20 €</li>
-  </ul>
-</section>
+<script>
+    // Charging sessions per month
+    new Chart(document.getElementById("sessionsChart"), {
+      type: "bar",
+      data: {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May"],
+        datasets: [{
+          label: "Sessions",
+          data: [3, 5, 2, 6, 4],
+          backgroundColor: "#00c853"
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+  
+    // Energy charged
+    new Chart(document.getElementById("energyChart"), {
+      type: "line",
+      data: {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May"],
+        datasets: [{
+          label: "kWh",
+          data: [45, 62, 30, 80, 55],
+          borderColor: "#00c853",
+          backgroundColor: "rgba(0,200,83,0.2)",
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+  
+    // Money spent
+    new Chart(document.getElementById("moneyChart"), {
+      type: "line",
+      data: {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May"],
+        datasets: [{
+          label: "€",
+          data: [12, 18, 9, 25, 15],
+          borderColor: "#ff5252",
+          backgroundColor: "rgba(255,82,82,0.2)",
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+
+
+  </script>
+    
+  <!-- replace the data with this below -->
+  <!-- fetch("/api/user/stats/sessions")
+    .then(res => res.json())
+    .then(data => {
+      sessionsChart.data.labels = data.labels;
+      sessionsChart.data.datasets[0].data = data.values;
+      sessionsChart.update();
+    })
+    .catch(err => console.error(err)); -->
 
 <%- include("partials/footer") %>

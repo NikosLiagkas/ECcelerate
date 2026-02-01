@@ -1,0 +1,31 @@
+<%- include("partials/header", { title: "Sign In" }) %>
+
+<section class="wrapper">
+  <h1 class="page-title">Sign In</h1>
+
+  <div class="card card-medium card-center">
+    <h3>Login to your account</h3>
+
+    <form class="form">
+      <label>Username or Email</label>
+      <input type="text" placeholder="Username or email" />
+
+      <label>Password</label>
+      <input type="password" placeholder="Password" />
+
+      <div class="actions-center">
+        <button type="button" class="btn btn-primary">
+          Sign In
+        </button>
+      </div>
+    </form>
+
+    <div class="actions-center">
+      <a href="/register" class="btn btn-outline">
+        Create Account
+      </a>
+    </div>
+  </div>
+</section>
+
+<%- include("partials/footer") %>

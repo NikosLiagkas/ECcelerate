@@ -1,4 +1,8 @@
-body {
+/* =========================
+   GLOBAL LAYOUT & THEME
+   ========================= */
+
+   body {
     margin: 0;
     font-family: Arial, sans-serif;
     min-height: 100vh;
@@ -13,7 +17,14 @@ body {
     color: white;
   }
   
+  .container {
+    flex: 1;
+    padding: 20px;
+  }
   
+  /* =========================
+     NAVBAR & FOOTER
+     ========================= */
   
   .navbar {
     background: rgba(30, 30, 30, 0.85);
@@ -28,36 +39,10 @@ body {
     z-index: 10;
   }
   
-  
   .navbar a {
     color: white;
     margin-left: 15px;
     text-decoration: none;
-  }
-  
-  .container {
-    flex: 1;
-    padding: 20px;
-  }
-
-  .page-title {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: white;
-  }
-  
-  .hero-content h1 {
-    font-size: 3rem;
-    margin-bottom: 15px;
-  }
-  
-  .card {
-    background: white;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 8px;
   }
   
   .footer {
@@ -68,8 +53,21 @@ body {
     border-top: 1px solid #333;
   }
   
+  /* =========================
+     PAGE TITLES
+     ========================= */
   
-  /* ===== HERO SECTION ===== */
+  .page-title {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  
+  /* =========================
+     HERO (HOMEPAGE)
+     ========================= */
+  
   .hero {
     flex: 1;
     display: flex;
@@ -78,16 +76,15 @@ body {
     text-align: center;
   }
   
-
-  
   .hero-content {
-    position: relative;
-    color: white;
-    text-align: center;
     max-width: 700px;
     padding: 20px;
   }
   
+  .hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 15px;
+  }
   
   .hero-content p {
     font-size: 1.2rem;
@@ -102,14 +99,18 @@ body {
     flex-wrap: wrap;
   }
   
-  /* ===== BUTTONS ===== */
+  /* =========================
+     BUTTON SYSTEM
+     ========================= */
   
   .btn {
     padding: 12px 22px;
     border-radius: 30px;
     text-decoration: none;
     font-weight: bold;
+    cursor: pointer;
     transition: all 0.2s ease;
+    border: none;
   }
   
   .btn-primary {
@@ -131,6 +132,7 @@ body {
   }
   
   .btn-outline {
+    background: transparent;
     border: 2px solid white;
     color: white;
   }
@@ -140,159 +142,224 @@ body {
     color: black;
   }
   
-  /* ===== BALANCE PAGE ===== */
-
-.balance-wrapper {
-    max-width: 900px;
-    margin: 0 auto;
-  }
+  /* =========================
+     CARD SYSTEM (CORE)
+     ========================= */
   
-  .balance-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 260px));
-    gap: 20px;
-    margin-bottom: 30px;
-    justify-content: center;
-  }
-  
-  
-  /* Dark cards for Balance page */
-  .balance-card {
+  .card {
     background: rgba(30, 30, 30, 0.85);
     border: 1px solid #333;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
     color: white;
+  }
+  
+  /* Card sizes */
+  .card-medium {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .card-wide {
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Card modifiers */
+  .card-center {
     text-align: center;
   }
   
-  
-  .balance-card h3 {
+  /* Card headers (centered by default) */
+  .card h3,
+  .card h4 {
     color: #ccc;
+    margin-bottom: 15px;
+    font-weight: normal;
     text-align: center;
+  }
+  
+  /* Cards containing tables */
+  .card-table h3,
+  .card-table h4 {
+    text-align: left;
+  }
+
+  /* Card header with action button */
+.card-header-with-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 15px;
   }
   
-  .balance-amount {
-    font-size: 2.2rem;
+  .card-header-with-button h3 {
+    margin: 0;
+    text-align: left;
+  }
+  
+  
+  /* Highlighted numbers */
+  .stat-value {
+    font-size: 2rem;
     font-weight: bold;
     color: #00c853;
   }
   
-  .add-money-form {
-    max-width: 300px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  /* =========================
+     GRID HELPERS
+     ========================= */
+  
+  .grid {
+    display: grid;
+    gap: 20px;
   }
   
-
-  .add-money-wrapper {
-    display: flex;
+  .grid-center {
     justify-content: center;
   }
   
-    .add-money-card {
-        background: rgba(30, 30, 30, 0.85) !important;
-        border: 1px solid #333;
-        width: 100%;
-        max-width: 400px;
-        text-align: center;
-        color: white;
-    }
-    .add-money-card p {
-        color: #ccc;
-    }
-
-    .add-money-card h3 {
-        color: #ccc;
-        text-align: center;
-        margin-bottom: 15px;
-      }
-
-    .add-money-form {
-        margin: 0 auto;
-        align-items: center;
-    }
-
-    .add-money-form input {
-        width: 100%;
-        padding: 14px 16px;
-        border-radius: 10px;
-        border: none;
-        font-size: 1.2rem;
-        background: #111;
-        color: white;
-      }      
-
-    .add-money-form label {
-    width: 100%;
-    text-align: center;
-    font-size: 1.1rem;
-    font-weight: normal;
-    color: #ccc;
-    margin-bottom: 5px;
-    }
-      
-    .history-actions {
-        text-align: center;
-        margin-top: 25px;
-      }
-      
-      /* ===== PAYMENT HISTORY ===== */
-
-.transactions-card {
-    background: rgba(30, 30, 30, 0.85);
-    border: 1px solid #333;
+  .grid-auto {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 260px));
+  }
+  
+  /* Account info layout */
+    .info-grid {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    row-gap: 10px;
+    column-gap: 15px;
+    align-items: center;
+  }
+  
+  .info-label {
+    text-align: right;
+    color: #aaa;
+    font-weight: bold;
+  }
+  
+  .info-value {
+    text-align: left;
     color: white;
   }
   
-  .transactions-card h3 {
-    color: #ccc;
-    text-align: center;
-    margin-bottom: 15px;
+  /* =========================
+     FORMS (GLOBAL)
+     ========================= */
+  
+  .form {
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 0 auto;
   }
   
-  /* Table styling */
-  .transactions-table {
+  .form label {
+    color: #ccc;
+    font-size: 1rem;
+    text-align: center;
+  }
+  
+  .form input,
+  .form select {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1rem;
+    background: #111;
+    color: white;
+  }
+  
+  /* =========================
+     TABLES (GLOBAL)
+     ========================= */
+  
+  .table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
   }
   
-  .transactions-table th,
-  .transactions-table td {
+  .table th,
+  .table td {
     padding: 12px 10px;
     text-align: center;
   }
   
-  .transactions-table th {
+  .table th {
     color: #aaa;
     font-weight: normal;
     border-bottom: 1px solid #444;
   }
   
-  .transactions-table td {
+  .table td {
     border-bottom: 1px solid #333;
   }
   
-  .transactions-table tr:last-child td {
+  .table tr:last-child td {
     border-bottom: none;
   }
   
-  /* Centered actions (e.g. Show Full History) */
-  .transactions-actions {
+  /* =========================
+     ACTION AREAS
+     ========================= */
+  
+  .actions-center {
     margin-top: 20px;
     text-align: center;
   }
   
-  /* Back button above history card */
-  .history-actions {
+  .actions-left {
     margin-bottom: 15px;
-  }
-  
-  .history-actions-left {
     display: flex;
     justify-content: flex-start;
   }
   
+  /* =========================
+     PAGE WRAPPERS
+     ========================= */
   
+  .wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  /* =========================
+   STATISTICS / GRAPHS
+   ========================= */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  .stat-box {
+    background: rgba(20, 20, 20, 0.9);
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 15px;
+  }
+  
+  .stat-box h4 {
+    color: #ccc;
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: normal;
+  }
+  
+  .chart-placeholder {
+    height: 180px;
+    border: 2px dashed #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #777;
+    font-size: 0.9rem;
+  }
   

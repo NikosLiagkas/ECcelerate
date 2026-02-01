@@ -8,6 +8,19 @@ app.set("views", path.join(__dirname, "views"));
 
 app.use(express.static(path.join(__dirname, "public")));
 
+app.get("/login", (req, res) => {
+    res.render("login");
+  });
+  
+  app.get("/register", (req, res) => {
+    res.render("create_account");
+  });
+  
+  app.get("/logout", (req, res) => {
+    // later: destroy session
+    res.redirect("/");
+  });
+  
 app.get("/", (req, res) => {
   res.render("home");
 });
@@ -29,8 +42,13 @@ app.get("/balance", (req, res) => {
 });
 
 app.get("/balance/history", (req, res) => {
-    res.render("balance-history");
+    res.render("balance_history");
   });
+
+  app.get("/user/addVehicle", (req, res) => {
+    res.render("add_vehicle");
+  });
+
 
 app.listen(3000, () => {
   console.log("Frontend running at http://localhost:3000");

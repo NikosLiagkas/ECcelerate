@@ -1,0 +1,37 @@
+<%- include("partials/header", { title: "User Profile" }) %>
+
+<section class="wrapper">
+  <h1 class="page-title">Add New Vehicle</h1>
+
+  <div class="card card-medium card-center">
+    <div class="actions-left">
+        <a href="/user" class="btn btn-outline">← Back to User Page</a>
+      </div> 
+
+    <h3>New Vehicle Information</h3>
+
+
+    <form class="form">
+      <label>License Plates</label>
+      <input type="text" placeholder="e.g. ΙΚΥ-1234" />
+
+      <label>Vehicle Type</label>
+      <select>
+        <option value="car">Car</option>
+        <option value="motorcycle">Motorcycle</option>
+        <option value="truck">Truck</option>
+      </select>
+
+      <label>Model</label>
+      <input type="text" placeholder="Vehicle model" />
+
+      <div class="actions-center">
+        <button type="button" class="btn btn-primary">
+          Create Vehicle
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<%- include("partials/footer") %>

@@ -17,6 +17,9 @@ app.use(BASE + "/admin", adminRoutes);
 const pointsRoute = require("./routes/pointsRoute");
 app.use(BASE, pointsRoute);
 
+const singlePointRoute = require("./routes/singlePointRoute");
+app.use(BASE, singlePointRoute);
+
 
 app.listen(9876, () => {
   console.log("Server running at http://localhost:9876");

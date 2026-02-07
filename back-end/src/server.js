@@ -14,6 +14,14 @@ app.use(express.json());
 const adminRoutes = require("./routes/adminRoutes");
 app.use(BASE + "/admin", adminRoutes);
 
+const pointsRoute = require("./routes/pointsRoute");
+app.use(BASE, pointsRoute);
+
+const singlePointRoute = require("./routes/singlePointRoute");
+app.use(BASE, singlePointRoute);
+
+const updpointRoute = require("./routes/updpointRoute");
+app.use(BASE, updpointRoute);
 
 const reserveRoute = require("./routes/reserveRoutes");
 app.use(BASE, reserveRoute);

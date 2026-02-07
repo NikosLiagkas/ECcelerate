@@ -13,12 +13,15 @@ exports.addChargers = async (req, res) => {
                 buildErrorLog(req, 400, err.message, "Provide a file")
             )
         }
+        
+        const mime = req.file.mimetype || "";
 
-        if (req.file.mimetype !== "text/csv"){
-            return res.status.jason(
-                buildErrorLog(req, 400, err.message, "MIME type has to be text/csv")
-            )
+        if (!mime.startsWith("text/csv")) {
+        return res.status(400).json(
+           buildErrorLog(req, 400, `Invalid MIME type: ${mime}`, "MIME type has to be text/csv")
+        );
         }
+
         const csvText = req.file.buffer.toString("utf8");
         const rows = parse(csvText, {
                 columns: true,

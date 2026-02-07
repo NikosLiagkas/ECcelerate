@@ -1,6 +1,6 @@
 
 const reserveModel = require("../models/reserveModel");
-const { buildErrorLog } = require("../utils");
+const { buildErrorLog } = require("../utils/utils");
 
 exports.reserveCharger = async (req, res) => {
     try {

@@ -21,6 +21,12 @@ app.use(BASE, reserveRoute);
 const newSessionRoute = require("./routes/newSessionRoutes");
 app.use(BASE, newSessionRoute);
 
+const pointStatusRoute = require("./routes/pointStatusRoutes");
+app.use(BASE, pointStatusRoute);
+
+const sessionsRoute = require("./routes/sessionsRoutes");
+app.use(BASE, sessionsRoute);
+
 app.listen(9876, () => {
   console.log("Server running at http://localhost:9876");
 });

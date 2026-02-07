@@ -1,6 +1,6 @@
 
 
-const { buildErrorLog } = require("../utils");
+const { buildErrorLog } = require("../utils/utils");
 const resetpointsModel = require("../models/resetpointsModel");
 const fs = require("fs");
 const RESET_FILE = "./data/parts1234.json";

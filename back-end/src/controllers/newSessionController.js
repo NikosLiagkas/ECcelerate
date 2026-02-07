@@ -1,5 +1,5 @@
 const sessionModel = require("../models/newSessionModel");
-const { buildErrorLog } = require("../utils");
+const { buildErrorLog } = require("../utils/utils");
 
 const REQUIRED_FIELDS = [
   "id",

@@ -535,9 +535,67 @@ def generate_ratings():
 
     print(f"gives_rating.csv generated with {len(ratings)} ratings")                       
             
-    
-    
-    
+def generate_charger_status_history():
+    history = []
+
+    allowed_transitions = {
+        "available": ["charging", "reserved", "malfunction", "offline"],
+        "reserved": ["charging", "malfunction", "offline"],
+        "charging": ["available", "malfunction", "offline"],
+        "malfunction": ["available"],
+        "offline": ["available"]
+    }
+
+    chargers = []
+
+    with open("chargers.csv", newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for i, row in enumerate(reader, start=1):
+            chargers.append({
+                "charger_id": i,
+                "current_status": row["status"]
+            })
+
+    base_date = datetime(2025, 1, 1)
+
+    for charger in chargers:
+        charger_id = charger["charger_id"]
+        current_status = charger["current_status"]
+
+        num_changes = random.randint(1, 8)
+
+        last_time = base_date + timedelta(
+            days=random.randint(0, 180),
+            hours=random.randint(0, 23),
+            minutes=random.randint(0, 59)
+        )
+
+        for _ in range(num_changes):
+            possible_next = allowed_transitions[current_status]
+            new_status = random.choice(possible_next)
+
+            history.append([
+                charger_id,
+                current_status,
+                new_status,
+                last_time.strftime("%Y-%m-%d %H:%M:%S")
+            ])
+
+            current_status = new_status
+            last_time += timedelta(minutes=random.randint(10, 300))
+
+    with open("charger_status_history.csv", "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            "charger_id",
+            "old_status",
+            "new_status",
+            "changed_at"
+        ])
+        writer.writerows(history)
+
+    print(f"charger_status_history.csv generated with {len(history)} records")
+
     
 
 ################################################    
@@ -561,3 +619,4 @@ def generate_ratings():
 #generate_payments()
 #generate_reservations()
 #generate_ratings()
+#generate_charger_status_history()

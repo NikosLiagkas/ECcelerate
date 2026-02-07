@@ -102,6 +102,20 @@ CREATE TABLE charging (
         CHECK (end_soc >= start_soc)
 );
 
+CREATE TABLE charger_status_history (
+    history_id     SERIAL PRIMARY KEY,
+    charger_id     INTEGER NOT NULL,
+    old_status     charger_status NOT NULL,
+    new_status     charger_status NOT NULL,
+    changed_at     TIMESTAMP NOT NULL DEFAULT NOW(),
+
+    CONSTRAINT fk_history_charger
+        FOREIGN KEY (charger_id)
+        REFERENCES charger(charger_id)
+        ON DELETE CASCADE
+);
+
+
 
 -- =========================
 -- RELATIONSHIPS (FOREIGN KEYS)

@@ -1,6 +1,6 @@
 
 
-const { buildErrorLog } = require("../utils");
+const { buildErrorLog } = require("../utils/utils");
 const healthcheckModel = require("../models/healthcheckModel");
 
 

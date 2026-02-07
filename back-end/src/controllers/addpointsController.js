@@ -1,6 +1,6 @@
 
 
-const { buildErrorLog } = require("../utils");
+const { buildErrorLog } = require("../utils/utils");
 const addpointsModel = require("../models/addpointsModel");
 const { parse } = require("csv-parse/sync");
 

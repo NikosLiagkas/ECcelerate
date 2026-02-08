@@ -1,4 +1,5 @@
 const { pool } = require("../../config/db");
+const ApiError = require("../utils/apiError");
 
 exports.updatePoint = async (id, { status, kwhprice }) => {
   const result = await pool.query(
@@ -14,7 +15,7 @@ exports.updatePoint = async (id, { status, kwhprice }) => {
   );
 
   if (result.rowCount === 0) {
-    return null;
+    throw new ApiError(404, "Invalid point id", "Cannot find charge point with this ID in the database");
   }
 
   if (kwhprice !== undefined) {

@@ -2,11 +2,16 @@ const { Pool } = require("pg");
 
 const pool = new Pool({
   host: "localhost",
-  user: "softeng",
-  password: "softeng",
-  database: "softeng25",
+  user: "postgres",
+  password: "password",
+  database: "SoftengDB",
   port: 5432,
 });
 
 
-  module.exports = { pool };
+pool.on("error", (err) => {
+  console.error("Unexpected PG error", err);
+  process.exit(1);
+});
+
+module.exports = { pool };

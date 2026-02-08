@@ -1,4 +1,5 @@
 const { pool } = require("../config/db");
+const ApiError = require("../utils/apiError");
 
 exports.insertChargingSession = async ({
   chargerId,
@@ -19,14 +20,14 @@ exports.insertChargingSession = async ({
 
 
   if (chargerRes.rowCount === 0) {
-    throw new Error("Charger not found");
+    throw new ApiError(404, "Invalid point id", "Cannot find charge point with this ID in the database");
   }
 
   const stationId = chargerRes.rows[0].station_id;
   const currentStatus =  chargerRes.rows[0].status;
 
   if (currentStatus !== "reserved" && currentStatus !== "available") {
-    throw new Error("Charger not available");
+    throw new ApiError(400, "Charger not available or reserved", `Cannot start charging because this charging point's status is ${currentStatus}`);
   }
 
   // 2) Find a vehicle for this driver (required by charging table)
@@ -36,7 +37,7 @@ exports.insertChargingSession = async ({
   );
 
   if (vehicleRes.rowCount === 0) {
-    throw new Error(`Vehicle not found for driver_id=${driverId}`);
+    throw new ApiError(404, "No vehicle found", `There is no vehicle for the driver with driver_id=${driverId} in the database`);
   }
 
   const licensePlates = vehicleRes.rows[0].license_plates;

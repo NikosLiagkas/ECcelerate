@@ -6,15 +6,25 @@
   <div class="card card-medium card-center">
     <h3>Login to your account</h3>
 
-    <form class="form">
+    <form class="form" id="loginForm">
       <label>Username or Email</label>
-      <input type="text" placeholder="Username or email" />
+      <input
+        type="text"
+        name="identifier"
+        placeholder="Username or email"
+        required
+      />
 
       <label>Password</label>
-      <input type="password" placeholder="Password" />
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        required
+      />
 
       <div class="actions-center">
-        <button type="button" class="btn btn-primary">
+        <button type="submit" class="btn btn-primary">
           Sign In
         </button>
       </div>
@@ -27,5 +37,44 @@
     </div>
   </div>
 </section>
+
+<script>
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+  
+    const form = e.target;
+  
+    try {
+      const res = await fetch("http://localhost:9876/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          identifier: form.identifier.value,
+          password: form.password.value
+        })
+      });
+  
+      if (res.ok) {
+        window.location.href = "/home";
+        return;
+      }
+
+      let message = "Login failed";
+  
+      try {
+        const data = await res.json();
+        message = `Error ${data.return_code}: ${data.error}`;
+      } catch {
+        message = `Error ${res.status}: ${res.statusText}`;
+      }
+  
+      alert(message);
+  
+    } catch (err) {
+      alert("Network error: cannot reach server");
+    }
+  });
+  </script>
 
 <%- include("partials/footer") %>

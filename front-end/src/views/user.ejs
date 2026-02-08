@@ -10,13 +10,13 @@
   
     <div class="info-grid">
       <div class="info-label">Username</div>
-      <div class="info-value">demo_user</div>
-  
+      <div class="info-value" id="username"></div>
+
       <div class="info-label">Email</div>
-      <div class="info-value">demo@mail.com</div>
-  
+      <div class="info-value" id="email"></div>
+
       <div class="info-label">Name</div>
-      <div class="info-value">John Doe</div>
+      <div class="info-value" id="name"></div>
     </div>
   </div>
   
@@ -41,19 +41,8 @@
           <th>Battery Size (kWh)</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>ΙΚΥ-1234</td>
-          <td>Car</td>
-          <td>Tesla Model 3</td>
-          <td>60</td>
-        </tr>
-        <tr>
-          <td>ΖΝΑ-5678</td>
-          <td>Motorcycle</td>
-          <td>Zero SR/F</td>
-          <td>14</td>
-        </tr>
+      <tbody id="vehiclesBody">
+        <!-- vehicles will be injected here -->
       </tbody>
     </table>
   </div>
@@ -81,6 +70,62 @@
   
 
 </section>
+
+<script>
+  (async () => {
+    const res = await fetch("http://localhost:9876/api/user/vehicles", {
+      credentials: "include"
+    });
+  
+    if (!res.ok) {
+      console.error("Failed to load vehicles");
+      return;
+    }
+  
+    const vehicles = await res.json();
+    const tbody = document.getElementById("vehiclesBody");
+  
+    if (vehicles.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4">No vehicles added yet</td>
+        </tr>
+      `;
+      return;
+    }
+  
+    tbody.innerHTML = vehicles.map(v => `
+      <tr>
+        <td>${v.license_plates}</td>
+        <td>${v.vehicle_type}</td>
+        <td>${v.model}</td>
+        <td>${v.battery_size}</td>
+      </tr>
+    `).join("");
+  })();
+  </script>
+  
+
+<script>
+  (async () => {
+    const res = await fetch("http://localhost:9876/api/user/me", {
+      credentials: "include"
+    });
+  
+    if (!res.ok) {
+      alert("Failed to load user profile");
+      return;
+    }
+  
+    const user = await res.json();
+  
+    document.getElementById("username").textContent = user.username;
+    document.getElementById("email").textContent = user.email;
+    document.getElementById("name").textContent =
+      `${user.first_name ?? ""} ${user.last_name ?? ""}`.trim();
+  })();
+  </script>
+  
 
 <script>
     // Charging sessions per month

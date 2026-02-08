@@ -1,16 +1,35 @@
+const express = require("express");
+const cors = require("cors");
+const session = require("express-session");
 const { buildErrorLog } = require("./utils/utils");
 
-// Server routers
-const express = require("express");
 const app = express();
+const BASE = "/api";
 
-// base url
+/* MIDDLEWARE */
 
-const BASE = `/api`
+// CORS (MUST be before routes)
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
 
+// JSON body parsing
 app.use(express.json());
 
+// Session middleware
+app.use(session({
+  name: "softeng.sid",
+  secret: "softeng-secret",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 2 // 2 hours
+  }
+}));
 
+// ROUTES 
 const adminRoutes = require("./routes/adminRoutes");
 app.use(BASE + "/admin", adminRoutes);
 
@@ -34,6 +53,16 @@ app.use(BASE, pointStatusRoute);
 
 const sessionsRoute = require("./routes/sessionsRoutes");
 app.use(BASE, sessionsRoute);
+
+const authRoute = require("./routes/authRoutes");
+app.use(BASE + "/auth", authRoute);
+
+const userRoutes = require("./routes/userRoutes");
+app.use(BASE, userRoutes);
+
+const vehicleRoutes = require("./routes/vehiclesRoutes");
+app.use(BASE, vehicleRoutes);
+
 
 // if the request is a non specified path - return 404 Error
 app.use((req, res) => { 

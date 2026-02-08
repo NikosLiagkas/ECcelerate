@@ -3,23 +3,21 @@
 const { buildErrorLog } = require("../utils/utils");
 const addpointsModel = require("../models/addpointsModel");
 const { parse } = require("csv-parse/sync");
+const ApiError = require("../utils/apiError");
+const { checkDbConnection } = require("../utils/checkDbConnection");
 
 
 exports.addChargers = async (req, res) => {
 
     try {   
         if (!req.file){
-            return res.status(400).json(
-                buildErrorLog(req, 400, err.message, "Provide a file")
-            )
+            throw new ApiError(400, err.message, "Provide a file");
         }
         
         const mime = req.file.mimetype || "";
 
         if (!mime.startsWith("text/csv")) {
-        return res.status(400).json(
-           buildErrorLog(req, 400, `Invalid MIME type: ${mime}`, "MIME type has to be text/csv")
-        );
+            throw new ApiError(400, `Invalid MIME type: ${mime}`, "MIME type has to be text/csv");
         }
 
         const csvText = req.file.buffer.toString("utf8");
@@ -29,19 +27,27 @@ exports.addChargers = async (req, res) => {
             });
 
         if (rows.length === 0) {
-            return res.status(400).json(
-                buildErrorLog(req, 400, err.message, "No rows found")
-            );
+            throw new ApiError(400, err.message, "No rows found in the provided file");
         }
 
+        const dbOk = await checkDbConnection();
+        if (!dbOk) {
+            throw new ApiError(400, "Database connection error");
+        }
         await addpointsModel.createChargers(rows);
 
         return res.sendStatus(200);
 
     } catch(err) {
-
-        return res.status(400).json(buildErrorLog(req, 400, err.message , "Unreachable database"))
-
+        if (err instanceof ApiError) {
+            return res.status(err.statusCode).json(
+              buildErrorLog(req, err.statusCode, err.message, err.debugInfo)
+            );
+        }    
+    
+        return res.status(500).json(
+            buildErrorLog(req, 500, "Internal server error", err.message)
+        );
     }
 
 };

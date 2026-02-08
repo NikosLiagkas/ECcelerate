@@ -1,5 +1,7 @@
 const sessionModel = require("../models/newSessionModel");
 const { buildErrorLog } = require("../utils/utils");
+const { checkDbConnection } = require("../utils/checkDbConnection");
+const ApiError = require("../utils/apiError");
 
 const REQUIRED_FIELDS = [
   "id",
@@ -20,25 +22,19 @@ exports.newSession = async (req, res) => {
 
     // Check body existence and type
     if (!req.body || typeof req.body !== "object") {
-        return res.status(400).json(
-        buildErrorLog(req, 400, "Request body is missing or empty")
-        );
+      throw new ApiError(400, "Request body is missing or empty");
     }
     // Check required fields
     for (const field of REQUIRED_FIELDS) {
       if (!(field in body)) {
-        return res.status(400).json(
-          buildErrorLog(req, 400, `Missing required field: ${field}`)
-        );
+        throw new ApiError(400, `Missing required field: ${field}`);
       }
     }
 
     // id
     const chargerId = parseInt(body.id);
     if (!Number.isInteger(chargerId) || chargerId <= 0) {
-      return res.status(400).json(
-        buildErrorLog(req, 400, "Invalid id", "id must be a positive integer")
-      );
+      throw new ApiError(400, "Invalid point id", "Point id must be a positive integer");
     }
 
     // timestamps
@@ -46,23 +42,14 @@ exports.newSession = async (req, res) => {
       !TIMESTAMP_REGEX.test(body.starttime) ||
       !TIMESTAMP_REGEX.test(body.endtime)
     ) {
-      return res.status(400).json(
-        buildErrorLog(
-          req,
-          400,
-          "Invalid timestamp format",
-          "Expected YYYY-MM-DD hh:mm"
-        )
-      );
+      throw new ApiError(400, "Invalid timestamp format", "Expected YYYY-MM-DD hh:mm");
     }
 
     const startTime = new Date(body.starttime.replace(" ", "T"));
     const endTime = new Date(body.endtime.replace(" ", "T"));
 
-    if (isNaN(startTime) || isNaN(endTime) || endTime <= startTime) {
-      return res.status(400).json(
-        buildErrorLog(req, 400, "Invalid time range", "endtime must be after starttime")
-      );
+    if (isNaN(startTime) || isNaN(endTime) || endTime < startTime) {
+      throw new ApiError(400, "Invalid time range", "endtime must be after starttime");
     }
 
     // SOC
@@ -75,14 +62,7 @@ exports.newSession = async (req, res) => {
       endSOC < 0 || endSOC > 100 ||
       endSOC < startSOC
     ) {
-      return res.status(400).json(
-        buildErrorLog(
-          req,
-          400,
-          "Invalid SOC values",
-          "SOC must be 0–100 and endsoc ≥ startsoc"
-        )
-      );
+      throw new ApiError(400, "Invalid SOC values", "SOC must be 0–100 and endsoc ≥ startsoc");
     }
 
     // numeric values
@@ -92,17 +72,15 @@ exports.newSession = async (req, res) => {
 
     if (
       !Number.isFinite(totalKwh) || totalKwh <= 0 ||
-      !Number.isFinite(kwhPrice) || kwhPrice < 0 ||
-      !Number.isFinite(Amount) || Amount < 0
+      !Number.isFinite(kwhPrice) || kwhPrice <= 0 ||
+      !Number.isFinite(Amount) || Amount <= 0
     ) {
-      return res.status(400).json(
-        buildErrorLog(
-          req,
-          400,
-          "Invalid numeric values",
-          "Check totalkwh, kwhprice, Amount"
-        )
-      );
+      throw new ApiError(400, "Invalid numeric values", "Check totalkwh, kwhprice, Amount. These should be positive numeric values");
+    }
+
+    const dbOk = await checkDbConnection();
+    if (!dbOk) {
+      throw new ApiError(400, "Database connection error");
     }
 
     // Insert session
@@ -122,11 +100,11 @@ exports.newSession = async (req, res) => {
     return res.status(200).send();
 
   } catch (err) {
-    if (err.message === "Charger not found") {
-      return res.status(404).json(
-        buildErrorLog(req, 404, err.message)
+    if (err instanceof ApiError) {
+      return res.status(err.statusCode).json(
+        buildErrorLog(req, err.statusCode, err.message, err.debugInfo)
       );
-    }
+    }    
 
     return res.status(500).json(
       buildErrorLog(req, 500, "Internal server error", err.message)

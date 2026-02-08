@@ -1,4 +1,5 @@
 const { pool } = require("../config/db");
+const ApiError = require("../utils/apiError");
 
 exports.reservePoint = async (pointId, minutes, driverId) => {
 
@@ -9,7 +10,7 @@ exports.reservePoint = async (pointId, minutes, driverId) => {
   );
 
   if (charger.rowCount === 0) {
-    throw new Error("Charge point not found");
+    throw new ApiError(404, "Invalid point id", "Cannot find charge point with this ID in the database");
   }
 
   const currentStatus = charger.rows[0].status;

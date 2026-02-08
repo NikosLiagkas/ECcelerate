@@ -17,7 +17,7 @@ exports.healthcheck = async (req, res) => {
             ...stats
         });
     } catch(err) {
-        return res.status(400).json(buildErrorLog(req, 400, err.message , "Go look at the Database"));
+        return res.status(400).json(buildErrorLog(req, 400, err.message , "Database Unreachable"));
     }
 
 };

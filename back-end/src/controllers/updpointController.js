@@ -1,5 +1,7 @@
-const { buildErrorLog } = require("../utils");
+const { buildErrorLog } = require("../utils/utils");
 const updpointModel = require("../models/updpointModel");
+const ApiError = require("../utils/apiError");
+const { checkDbConnection } = require("../utils/checkDbConnection");
 
 const STATUS_ENUM = ["available", "charging", "reserved", "malfunction", "offline"];
 
@@ -8,29 +10,25 @@ exports.updpoint = async (req, res) => {
     const id = Number.parseInt(req.params.id, 10);
 
     if (!Number.isInteger(id) || id <= 0) {
-      return res.status(400).json(
-        buildErrorLog(req, 400, "Invalid point id.", "Point id must be a positive integer.")
-      );
+      throw new ApiError(400, "Invalid point id", "Point id must be a positive integer");
     }
 
     const { status, kwhprice } = req.body || {};
 
     if (status === undefined && kwhprice === undefined) {
-      return res.status(400).json(
-        buildErrorLog(req, 400, "Missing body fields.", "Provide status and/or kwhprice.")
-      );
+      throw new ApiError(400, "Missing body fields.", "Provide status and/or kwhprice.");
     }
-
     if (status !== undefined && !STATUS_ENUM.includes(status)) {
-      return res.status(400).json(
-        buildErrorLog(req, 400, "Invalid status.", "Status must be one of: available, charging, reserved, malfunction, offline.")
-      );
+      throw new ApiError(400, "Invalid status parameter", "Please try again with a valid status parameter : available, charging, reserved, malfunction, offline");
+    }
+    if (kwhprice !== undefined && (Number.isNaN(Number(kwhprice)) || Number(kwhprice) < 0)) {
+      throw new ApiError(400, "Invalid kwhprice.", "kwhprice must be a non-negative number.");
     }
 
-    if (kwhprice !== undefined && (Number.isNaN(Number(kwhprice)) || Number(kwhprice) < 0)) {
-      return res.status(400).json(
-        buildErrorLog(req, 400, "Invalid kwhprice.", "kwhprice must be a non-negative number.")
-      );
+    
+    const dbOk = await checkDbConnection();
+    if (!dbOk) {
+      throw new ApiError(400, "Database connection error");
     }
 
     const updated = await updpointModel.updatePoint(id, { status, kwhprice });
@@ -41,9 +39,16 @@ exports.updpoint = async (req, res) => {
 
     res.setHeader("Content-Type", "application/json; charset=utf-8");
     return res.status(200).json(updated);
+
   } catch (err) {
-    return res.status(400).json(
-      buildErrorLog(req, 400, err.message, "Go look at the Database")
+    if (err instanceof ApiError) {
+      return res.status(err.statusCode).json(
+        buildErrorLog(req, err.statusCode, err.message, err.debugInfo)
+      );
+    }    
+
+    return res.status(500).json(
+      buildErrorLog(req, 500, "Internal server error", err.message)
     );
   }
 };

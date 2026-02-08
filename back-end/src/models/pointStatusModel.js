@@ -1,4 +1,5 @@
 const { pool } = require("../config/db");
+const ApiError = require("../utils/apiError");
 
 exports.getPointStatus = async (chargerId, fromDate, toDate) => {
 
@@ -9,7 +10,7 @@ exports.getPointStatus = async (chargerId, fromDate, toDate) => {
   );
 
   if (exists.rowCount === 0) {
-    throw new Error("Charger not found");
+    throw new ApiError(404, "Invalid point id", "Cannot find charge point with this ID in the database");
   }
 
   // fetch history

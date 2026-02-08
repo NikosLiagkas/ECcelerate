@@ -1,4 +1,4 @@
-
+const { buildErrorLog } = require("./utils/utils");
 
 // Server routers
 const express = require("express");
@@ -34,6 +34,13 @@ app.use(BASE, pointStatusRoute);
 
 const sessionsRoute = require("./routes/sessionsRoutes");
 app.use(BASE, sessionsRoute);
+
+// if the request is a non specified path - return 404 Error
+app.use((req, res) => { 
+  return res.status(404).json( 
+    buildErrorLog( req, 404, "Service not found", "The requested endpoint does not exist" ) ); 
+  }
+);
 
 app.listen(9876, () => {
   console.log("Server running at http://localhost:9876");

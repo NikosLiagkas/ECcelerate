@@ -1,7 +1,4 @@
-
-
-
-const { pool } = require("../../config/db");
+const { pool } = require("../config/db");
 
 
 exports.createChargers = async (rows) =>{

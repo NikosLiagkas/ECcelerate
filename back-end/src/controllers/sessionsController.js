@@ -64,6 +64,7 @@ exports.getSessions = async (req, res) => {
   
 
     // Success → 200
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
     return res.status(200).json(sessions);
 
   } catch (err) {

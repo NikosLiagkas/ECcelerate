@@ -1,4 +1,4 @@
-const { pool } = require("../../config/db");
+const { pool } = require("../config/db");
 const ApiError = require("../utils/apiError");
 
 exports.updatePoint = async (id, { status, kwhprice }) => {

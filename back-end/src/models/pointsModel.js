@@ -1,6 +1,4 @@
-
-
-const { pool } = require("../../config/db");
+const { pool } = require("../config/db");
 
 exports.getPoints = async (point_status) => {
   const result = await pool.query(

@@ -26,6 +26,8 @@ exports.reserveCharger = async (req, res) => {
       }
 
       const result = await reserveModel.reservePoint(pointId, minutes, 1);
+
+      res.setHeader("Content-Type", "application/json; charset=utf-8");
       return res.status(200).json(result);
   
     } catch (err) {

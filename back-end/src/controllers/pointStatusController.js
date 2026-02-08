@@ -64,6 +64,7 @@ exports.getPointStatus = async (req, res) => {
     }
 
     // JSON
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
     return res.status(200).json(rows);
 
   } catch (err) {

@@ -1,7 +1,7 @@
 const pointStatusModel = require("../models/pointStatusModel");
 const { buildErrorLog } = require("../utils/utils");
 const { toCSV } = require("../utils/csv");
-const ApiError = require("../utils/apiError");
+const ApiError = require("../utils/ApiError");
 const { checkDbConnection } = require("../utils/checkDbConnection");
 
 const DATE_REGEX = /^\d{8}$/;

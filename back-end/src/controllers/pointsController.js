@@ -1,6 +1,6 @@
 const { buildErrorLog } = require("../utils/utils");
 const pointsModel = require("../models/pointsModel");
-const ApiError = require("../utils/apiError");
+const ApiError = require("../utils/ApiError");
 const { toCSV } = require("../utils/csv");
 const { checkDbConnection } = require("../utils/checkDbConnection");
 

@@ -2,7 +2,7 @@ const sessionModel = require("../models/sessionsModel");
 const { buildErrorLog } = require("../utils/utils");
 const { toCSV } = require("../utils/csv");
 const { checkDbConnection } = require("../utils/checkDbConnection");
-const ApiError = require("../utils/apiError");
+const ApiError = require("../utils/ApiError");
 
 const DATE_REGEX = /^\d{8}$/; // YYYYMMDD
 

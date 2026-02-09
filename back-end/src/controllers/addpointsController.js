@@ -3,7 +3,7 @@
 const { buildErrorLog } = require("../utils/utils");
 const addpointsModel = require("../models/addpointsModel");
 const { parse } = require("csv-parse/sync");
-const ApiError = require("../utils/apiError");
+const ApiError = require("../utils/ApiError");
 const { checkDbConnection } = require("../utils/checkDbConnection");
 
 

@@ -5,7 +5,7 @@ const resetpointsModel = require("../models/resetpointsModel");
 const fs = require("fs");
 const RESET_FILE = "./data/parts1234.json";
 const { checkDbConnection } = require("../utils/checkDbConnection");
-const ApiError = require("../utils/apiError");
+const ApiError = require("../utils/ApiError");
 
 exports.resetpoints = async (req, res) => {
 

@@ -1,5 +1,5 @@
 const { pool } = require("../config/db");
-const ApiError = require("../utils/apiError");
+const ApiError = require("../utils/ApiError");
 
 exports.insertChargingSession = async ({
   chargerId,

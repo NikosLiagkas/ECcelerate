@@ -1,7 +1,7 @@
 const { buildErrorLog } = require("../utils/utils");
 const singlePointModel = require("../models/singlePointModel");
 const { checkDbConnection } = require("../utils/checkDbConnection");
-const ApiError = require("../utils/apiError");
+const ApiError = require("../utils/ApiError");
 
 exports.singlePoint = async (req, res) => {
   try {

@@ -49,6 +49,13 @@ app.get("/login", (req, res) => {
     res.render("add_vehicle");
   });
 
+  app.get("/statistics", (req, res) => {
+    res.render("statistics");
+  });
+
+  app.get("/stations", (req, res) => {
+    res.render("stations");
+  });
 
 app.listen(3000, () => {
   console.log("Frontend running at http://localhost:3000");

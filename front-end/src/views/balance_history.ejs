@@ -17,22 +17,42 @@
           <th>Points Used</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>2026-01-12 18:45</td>
-          <td>42</td>
-          <td>-5.00</td>
-          <td>10</td>
-        </tr>
-        <tr>
-          <td>2026-01-10 21:10</td>
-          <td>39</td>
-          <td>-7.50</td>
-          <td>0</td>
-        </tr>
-      </tbody>
+      <tbody id="allPaymentsBody"></tbody>
     </table>
   </div>
 </section>
+
+<script>
+  (async () => {
+    // All Payments
+    const payRes = await fetch(
+      "http://localhost:9876/api/balance/payments",
+      { credentials: "include" }
+    );
+  
+    if (!payRes.ok) return;
+  
+    const payments = await payRes.json();
+    const tbody = document.getElementById("allPaymentsBody");
+  
+    if (payments.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4">No payments yet</td>
+        </tr>
+      `;
+      return;
+    }
+  
+    tbody.innerHTML = payments.map(p => `
+      <tr>
+        <td>${new Date(p.paid_at).toLocaleString()}</td>
+        <td>${p.charge_id ?? "-"}</td>
+        <td>${Number(p.price_paid).toFixed(2)}</td>
+        <td>${p.points_used ?? 0}</td>
+      </tr>
+    `).join("");
+  })();
+  </script>
 
 <%- include("partials/footer") %>

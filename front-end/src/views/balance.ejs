@@ -6,12 +6,12 @@
   <div class="grid grid-auto grid-center">
     <div class="card card-center">
       <h3>Current Balance</h3>
-      <p class="stat-value">€ 25.00</p>
+      <p class="stat-value" id="balanceValue"></p>
     </div>
 
     <div class="card card-center">
       <h3>Credit Points</h3>
-      <p class="stat-value">120 pts</p>
+      <p class="stat-value" id="pointsValue"></p>
     </div>
   </div>
 
@@ -19,12 +19,19 @@
     <h3>Add Money</h3>
     <p>You can load money to your account balance.</p>
 
-    <form class="form">
+    <form class="form" id="addBalanceForm">
       <label>Amount (€)</label>
-      <input type="number" min="5" step="5" placeholder="e.g. 20" />
+      <input
+          type="number"
+          name="amount"
+          min="0.01"
+          step="0.01"
+          placeholder="e.g. 20.00"
+          required
+      />
 
       <div class="actions-center">
-        <button type="button" class="btn btn-primary">Add Money</button>
+        <button type="submit" class="btn btn-primary">Add Money</button>
       </div>
     </form>
   </div>
@@ -41,20 +48,7 @@
           <th>Points Used</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>2026-01-12 18:45</td>
-          <td>42</td>
-          <td>-5.00</td>
-          <td>10</td>
-        </tr>
-        <tr>
-          <td>2026-01-10 21:10</td>
-          <td>39</td>
-          <td>-7.50</td>
-          <td>0</td>
-        </tr>
-      </tbody>
+      <tbody id="paymentsBody"></tbody>
     </table>
 
     <div class="actions-center">
@@ -64,5 +58,75 @@
     </div>
   </div>
 </section>
+
+<script>
+  (async () => {
+    // Balance
+    const balRes = await fetch("http://localhost:9876/api/balance/me", {
+      credentials: "include"
+    });
+  
+    if (balRes.ok) {
+      const bal = await balRes.json();
+      document.getElementById("balanceValue").textContent =
+        `€ ${Number(bal.balance).toFixed(2)}`;
+      document.getElementById("pointsValue").textContent =
+        `${bal.credit_points} pts`;
+    }
+  
+    // Payments
+    const payRes = await fetch(
+      "http://localhost:9876/api/balance/payments?limit=5",
+      { credentials: "include" }
+    );
+  
+    if (!payRes.ok) return;
+  
+    const payments = await payRes.json();
+    const tbody = document.getElementById("paymentsBody");
+  
+    if (payments.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4">No payments yet</td>
+        </tr>
+      `;
+      return;
+    }
+  
+    tbody.innerHTML = payments.map(p => `
+      <tr>
+        <td>${new Date(p.paid_at).toLocaleString()}</td>
+        <td>${p.charge_id ?? "-"}</td>
+        <td>${Number(p.price_paid).toFixed(2)}</td>
+        <td>${p.points_used ?? 0}</td>
+      </tr>
+    `).join("");
+  })();
+</script>
+
+<script>
+  document.getElementById("addBalanceForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+  
+    const amount = Number(e.target.amount.value);
+  
+    const res = await fetch("http://localhost:9876/api/balance/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ amount: amount })
+    });
+  
+    if (res.ok) {
+      // Reload page to refresh balance & payments
+      window.location.reload();
+    } else {
+      const err = await res.json();
+      alert(`Error ${err.return_code}: ${err.error}`);
+    }
+  });
+</script>
+    
 
 <%- include("partials/footer") %>

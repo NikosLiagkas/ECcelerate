@@ -7,7 +7,7 @@ num_chargers,lon,lat,provider,price_per_kwh,address_street,address_number,postal
 5,23.727395,38.078772,bombastic_electric,0.3,Panepistimiou,87,13895,Mosxato
 2,23.756166,37.987303,big_energy,0.52,Leoforos Panagi Tsaldari,4,11284,Ilion
 2,23.647174,38.001056,dei,0.27,Syngrou,134,19867,Ilion
-6,23.686323,37.906532,big_energy,0.36,Leoforos Athinon,111,15778,Nea Smyrni
+6,23.705620,37.988500,big_energy,0.36,Leoforos Athinon,111,15778,Nea Smyrni
 2,23.664768,38.008247,big_energy,0.5,Syngrou,60,13077,Chalandri
 5,23.672958,38.039008,bombastic_electric,0.42,Anapafseos,186,16652,Ilion
 9,23.775052,37.942849,dei,0.55,Leoforos Athinon,185,17152,Chalandri

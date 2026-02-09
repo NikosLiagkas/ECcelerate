@@ -25,7 +25,8 @@
       "/charge",
       "/balance",
       "/balance/history",
-      "/user/addVehicle"
+      "/user/addVehicle",
+      "/statistics"
     ];
   
     if (!protectedPaths.includes(window.location.pathname)) return;
@@ -51,6 +52,7 @@ fetch("http://localhost:9876/api/auth/me", {
   if (data.loggedIn) {
     nav.innerHTML = `
       <a href="/home">Home</a>
+      <a href="/statistics">General Statistics</a>
       <a href="/charge">Charge</a>
       <a href="/balance">Balance</a>
       <a href="/user">User Profile</a>

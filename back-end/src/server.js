@@ -63,6 +63,11 @@ app.use(BASE, userRoutes);
 const vehicleRoutes = require("./routes/vehiclesRoutes");
 app.use(BASE, vehicleRoutes);
 
+const balanceRoutes = require("./routes/balanceRoutes");
+app.use(BASE, balanceRoutes);
+
+const chargePageRoutes = require("./routes/chargeRoutes");
+app.use(BASE, chargePageRoutes);
 
 // if the request is a non specified path - return 404 Error
 app.use((req, res) => { 

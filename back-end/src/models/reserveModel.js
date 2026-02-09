@@ -30,7 +30,7 @@ exports.reservePoint = async (pointId, minutes, driverId) => {
 
   const reservation_price = Math.round(minutes * 0.1 * 100) / 100;
 
-  // 4️⃣ Insert reservation
+  // Insert reservation
   await pool.query(
     `
     INSERT INTO reserves_position

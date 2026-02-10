@@ -103,7 +103,7 @@ exports.storeChargingIntent = async (req, res) => {
       return res.status(401).json({ error: "Not authenticated" });
     }
   
-    const { money, points, chargerId, stationId } = req.body;
+    const { money, points, chargerId, stationId, vehiclePlate } = req.body;
   
     if (money <= 0 || points < 0 || points > money) {
       return res.status(400).json({ error: "Invalid charging intent" });
@@ -114,6 +114,7 @@ exports.storeChargingIntent = async (req, res) => {
       points,
       chargerId,
       stationId,
+      vehiclePlate,
       createdAt: new Date()
     };
   
@@ -141,6 +142,19 @@ exports.startChargingFromReservedPosition = async (req, res) => {
           chargingIntent
         );
   
+      const startSoc = Math.floor(Math.random() * 36) + 5;
+      req.session.activeCharging = {
+        driverId,
+        chargerId: result.charger_id,
+        stationId: result.station_id,
+        vehiclePlate: chargingIntent.vehiclePlate,
+        money: chargingIntent.money,
+        points: chargingIntent.points,
+        startSoc,
+        startedAt: new Date()
+      };
+      delete req.session.chargingIntent;
+
       return res.status(200).json({
         message: "Charging started",
         charging_id: result.charging_id,
@@ -184,6 +198,18 @@ exports.startChargingDirect = async (req, res) => {
         points
       );
   
+      const startSoc = Math.floor(Math.random() * 36) + 5;
+      req.session.activeCharging = {
+        driverId,
+        chargerId,
+        stationId: result.station_id,
+        vehiclePlate,
+        money,
+        points,
+        startSoc,
+        startedAt: new Date()
+      };
+
       return res.status(200).json({
         message: "Charging started",
         charging_id: result.charging_id
@@ -209,11 +235,18 @@ exports.stopCharging = async (req, res) => {
       }
   
       const driverId = req.session.driver.driver_id;
-  
-      const result = await chargeModel.stopCharging(driverId);
+      const activeCharging = req.session.activeCharging;
+      if (!activeCharging) {
+        return res.status(404).json({
+          error: "No active charging session"
+        });
+      }
+
+      const result = await chargeModel.stopCharging(driverId, activeCharging);
   
       // Clear charging intent after completion
       delete req.session.chargingIntent;
+      delete req.session.activeCharging;
   
       return res.status(200).json({
         message: "Charging completed",

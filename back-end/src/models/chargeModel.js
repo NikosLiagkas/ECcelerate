@@ -239,30 +239,18 @@ exports.startChargingFromReservation = async (driverId, chargingIntent) => {
       [reservation.charger_id]
     );
 
-    const chargingRes = await client.query(
-      `
-      INSERT INTO charging
-        (driver_id, charger_id, vehicle_plates, connection_time, amount, points_used)
-      VALUES
-        ($1, $2, $3, NOW(), $4, $5)
-      RETURNING charging_id
-      `,
-      [
-        driverId,
-        reservation.charger_id,
-        chargingIntent.vehiclePlate,
-        chargingIntent.money,
-        chargingIntent.points
-      ]
+    const chargerInfo = await client.query(
+      "SELECT station_id FROM charger WHERE charger_id = $1",
+      [reservation.charger_id]
     );
-
-    const chargingId = chargingRes.rows[0].charging_id;
+    const stationId = chargerInfo.rows[0]?.station_id;
 
     await client.query("COMMIT");
 
     return {
-      charging_id: chargingId,
+      charging_id: null,
       charger_id: reservation.charger_id,
+      station_id: stationId,
       reservation_price: reservationPrice,
       started_at: now
     };
@@ -326,21 +314,17 @@ exports.startChargingDirect = async (
     );
 
     // Create charging session
-    const sessionRes = await client.query(
-      `
-      INSERT INTO charging
-        (driver_id, charger_id, vehicle_plates, connection_time, amount, points_used)
-      VALUES
-        ($1, $2, $3, NOW(), $4, $5)
-      RETURNING charging_id
-      `,
-      [driverId, chargerId, vehiclePlate, money, points]
+    const stationRes = await client.query(
+      "SELECT station_id FROM charger WHERE charger_id = $1",
+      [chargerId]
     );
+    const stationId = stationRes.rows[0]?.station_id;
 
     await client.query("COMMIT");
 
     return {
-      charging_id: sessionRes.rows[0].charging_id
+      charging_id: null,
+      station_id: stationId
     };
 
   } catch (err) {
@@ -351,61 +335,79 @@ exports.startChargingDirect = async (
   }
 };
 
-exports.stopCharging = async (driverId) => {
+exports.stopCharging = async (driverId, activeCharging) => {
   const client = await pool.connect();
 
   try {
     await client.query("BEGIN");
 
-    // Get active charging session
-    const chargeRes = await client.query(
-      `
-      SELECT *
-      FROM charging
-      WHERE driver_id = $1
-        AND disconnection_time IS NULL
-      ORDER BY connection_time DESC
-      LIMIT 1
-      FOR UPDATE
-      `,
-      [driverId]
-    );
-
-    if (chargeRes.rowCount === 0) {
-      throw new ApiError(404, "No active charging session");
-    }
-
-    const charging = chargeRes.rows[0];
     const now = new Date();
+    const startedAt = new Date(activeCharging.startedAt);
 
     // Calculate duration (1 sec = 1 euro)
     const secondsCharged = Math.floor(
-      (now - charging.connection_time) / 1000
+      (now - startedAt) / 1000
     );
 
     const eurosCharged = Math.min(
       secondsCharged,
-      charging.amount
+      activeCharging.money
     );
 
     const pointsUsedFinal = Math.min(
-      charging.points_used,
+      activeCharging.points,
       eurosCharged
     );
 
     const moneyCharged = eurosCharged - pointsUsedFinal;
     const pointsEarned = Math.floor(eurosCharged / 10);
 
-    // Update charging row
+    const stationRes = await client.query(
+      "SELECT price_per_kwh FROM station WHERE station_id = $1",
+      [activeCharging.stationId]
+    );
+    const kwhPrice = stationRes.rows[0]?.price_per_kwh ?? null;
+    const kwhNeeded =
+      kwhPrice && Number(kwhPrice) > 0
+        ? Math.round((eurosCharged / Number(kwhPrice)) * 100) / 100
+        : null;
+
+    const startSoc = Number.isFinite(activeCharging.startSoc)
+      ? activeCharging.startSoc
+      : 5;
+    const minutesCharged = Math.ceil(secondsCharged / 60);
+    const endSoc = Math.min(100, startSoc + minutesCharged);
+
+    const insertRes = await client.query(
+      `
+      INSERT INTO charging
+        (connection_time, disconnection_time, start_soc, end_soc, kwh_needed, kwh_price, price, driver_id, license_plates, station_id)
+      VALUES
+        ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING charge_id
+      `,
+      [
+        startedAt,
+        now,
+        startSoc,
+        endSoc,
+        kwhNeeded,
+        kwhPrice,
+        eurosCharged,
+        driverId,
+        activeCharging.vehiclePlate,
+        activeCharging.stationId
+      ]
+    );
+
     await client.query(
       `
-      UPDATE charging
-      SET
-        disconnection_time = $1,
-        price = $2
-      WHERE charging_id = $3
+      INSERT INTO payment
+        (price_paid, paid_at, points_used, driver_id, charge_id)
+      VALUES
+        ($1, $2, $3, $4, $5)
       `,
-      [now, eurosCharged, charging.charging_id]
+      [moneyCharged, now, pointsUsedFinal, driverId, insertRes.rows[0].charge_id]
     );
 
     // Update driver
@@ -432,7 +434,7 @@ exports.stopCharging = async (driverId) => {
       SET status = 'available'
       WHERE charger_id = $1
       `,
-      [charging.charger_id]
+      [activeCharging.chargerId]
     );
 
     await client.query(
@@ -441,18 +443,20 @@ exports.stopCharging = async (driverId) => {
         (charger_id, old_status, new_status)
       VALUES ($1, 'charging', 'available')
       `,
-      [charging.charger_id]
+      [activeCharging.chargerId]
     );
 
     await client.query("COMMIT");
 
     return {
-      charge_id: charging.charging_id,
+      charge_id: insertRes.rows[0].charge_id,
       euros_charged: eurosCharged,
       money_charged: moneyCharged,
       points_used: pointsUsedFinal,
       points_earned: pointsEarned,
-      duration_seconds: secondsCharged
+      duration_seconds: secondsCharged,
+      start_soc: startSoc,
+      end_soc: endSoc
     };
 
   } catch (err) {
@@ -462,4 +466,3 @@ exports.stopCharging = async (driverId) => {
     client.release();
   }
 };
-

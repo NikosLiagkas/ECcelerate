@@ -1,6 +1,6 @@
 const { buildErrorLog } = require("../utils/utils");
 const updpointModel = require("../models/updpointModel");
-const ApiError = require("../utils/apiError");
+const ApiError = require("../utils/ApiError");
 const { checkDbConnection } = require("../utils/checkDbConnection");
 
 const STATUS_ENUM = ["available", "charging", "reserved", "malfunction", "offline"];

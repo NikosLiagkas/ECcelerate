@@ -1,4 +1,4 @@
-const ApiError = require("../utils/apiError");
+const ApiError = require("../utils/ApiError");
 const { buildErrorLog } = require("../utils/utils");
 const balanceModel = require("../models/balanceModel");
 

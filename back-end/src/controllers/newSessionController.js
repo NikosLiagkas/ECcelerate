@@ -1,7 +1,7 @@
 const sessionModel = require("../models/newSessionModel");
 const { buildErrorLog } = require("../utils/utils");
 const { checkDbConnection } = require("../utils/checkDbConnection");
-const ApiError = require("../utils/apiError");
+const ApiError = require("../utils/ApiError");
 
 const REQUIRED_FIELDS = [
   "id",

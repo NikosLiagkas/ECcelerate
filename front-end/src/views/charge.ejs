@@ -9,6 +9,7 @@
 <script>
 /* STATE - variables */
 let initData = null;
+let chargingData = {};
 let chargingTimer = null;
 let chargingStartTime = Date.now();
 let chargingMaxSeconds = null; // equals selected money
@@ -136,7 +137,7 @@ function renderReserved() {
 
         // Reservation is no longer valid → reload state
         const initRes = await fetch(
-          "http://localhost:9876/api/charge/init",
+          "http://localhost:9876/api/charge/initialize",
           { credentials: "include" }
         );
         initData = await initRes.json();
@@ -320,23 +321,25 @@ async function handleChargeSubmit(e) {
   // RESERVE FLOW (120 minutes)
   if (action === "reserve") {
     const res = await fetch(
-      `http://localhost:9876/api/reserve/${chargingData.chargerId}/${RESERVATION_MINUTES}`,
+      `http://localhost:9876/api/charge/reserve/${chargingData.chargerId}/${RESERVATION_MINUTES}`,
       {
-        method: "POST",
+        method: "GET",
         credentials: "include"
       }
     );
 
-    await fetch("/api/charge/intent", {
+    const vehiclePlate = document.getElementById("vehicleSelect").value;
+    await fetch("http://localhost:9876/api/charge/intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify({
         money,
         points,
-        chargerId,
-        stationId
-      })
+        chargerId: chargingData.chargerId,
+        stationId: chargingData.stationId,
+        vehiclePlate
+      })      
     });
     
 
@@ -427,7 +430,8 @@ function render() {
   if (chargeState === "idle") renderIdle();
   else if (chargeState === "reserved") renderReserved();
   else if (chargeState === "charging") renderCharging();
-  else if (chargeState === "summary") renderSummary();
+  else if (chargeState === "summary") renderSummary(window.chargingSummary);
+  ;
 }
 
 /* Initial render */

@@ -146,7 +146,7 @@ exports.startChargingFromReservedPosition = async (req, res) => {
         charging_id: result.charging_id,
         charger_id: result.charger_id,
         reservation_price: result.reservation_price,
-        amount : chargingIntent.amount
+        amount : chargingIntent.money
       });
   
     } catch (err) {

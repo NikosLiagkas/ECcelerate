@@ -162,7 +162,7 @@ exports.reserve = async (pointId, minutes, driverId) => {
   }
 };
 
-exports.startChargingFromReservation = async (driverId) => {
+exports.startChargingFromReservation = async (driverId, chargingIntent) => {
   const client = await pool.connect();
 
   try {
@@ -174,7 +174,7 @@ exports.startChargingFromReservation = async (driverId) => {
       SELECT *
       FROM reserves_position
       WHERE driver_id = $1
-        AND reservation_end_time > reservation_start_time
+        AND reservation_end_time > NOW()
       ORDER BY reservation_start_time DESC
       LIMIT 1
       FOR UPDATE
@@ -206,7 +206,8 @@ exports.startChargingFromReservation = async (driverId) => {
       )
     );
 
-    const reservationPrice = Math.round(minutesUsed * 0.1 * 100) / 100;
+    const mins = Math.max(1, minutesUsed);
+    const reservationPrice = Math.round(mins * 0.1 * 100) / 100;
 
     // Update reservation
     await client.query(
@@ -402,9 +403,9 @@ exports.stopCharging = async (driverId) => {
       SET
         disconnection_time = $1,
         price = $2
-      WHERE charge_id = $3
+      WHERE charging_id = $3
       `,
-      [now, eurosCharged, charging.charge_id]
+      [now, eurosCharged, charging.charging_id]
     );
 
     // Update driver
@@ -446,7 +447,7 @@ exports.stopCharging = async (driverId) => {
     await client.query("COMMIT");
 
     return {
-      charge_id: charging.charge_id,
+      charge_id: charging.charging_id,
       euros_charged: eurosCharged,
       money_charged: moneyCharged,
       points_used: pointsUsedFinal,

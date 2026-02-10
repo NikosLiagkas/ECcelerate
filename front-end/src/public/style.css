@@ -313,6 +313,13 @@
     margin-top: 20px;
     text-align: center;
   }
+
+  .card-header-with-button .actions-center {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
   
   .actions-left {
     margin-bottom: 15px;
@@ -372,9 +379,21 @@
     margin: 12px 0;
   }
   
-  .progress {
+.progress {
     height: 100%;
     width: 100%;
     background: #00c853;
     transition: width 0.5s linear;
+  }
+
+  .stats-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .stats-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }

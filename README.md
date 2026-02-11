@@ -18,17 +18,19 @@ The platform is implemented using a RESTful architecture, ensuring secure commun
 * PostgreSQL
 
 # Setup
-1. Clone our GitHub repository using the command:
+**1.** Clone our GitHub repository using the command:
 ```bash
    git clone https://github.com/ntua/softeng25-25 
 ```
-2. The database can be set up by running the code in mySchema.sql and importing the data from the csvs in the data folder. 
-3. You need to modify the file db.js with your own database credentials.
-4. Install Dependencies inside both ``` back-end ``` and ``` front-end ``` directories by running the following command
+**2.** The database can be set up by running the code in [mySchema.sql](https://github.com/ntua/softeng25-25/blob/main/back-end/data/mySchema.sql) and importing the already generated data from the CSVs in the [data folder](https://github.com/ntua/softeng25-25/tree/main/back-end/data). Optionally, if you want to generate your own data, you can use [myDataGenerator.py](https://github.com/ntua/softeng25-25/blob/main/back-end/data/myDataGenerator.py), which contains instructions at the end of the file.
+
+**3.** You need to modify the file [db.js](https://github.com/ntua/softeng25-25/blob/main/back-end/src/config/db.js) with your own database credentials.
+
+**4.** Install Dependencies inside both ``` back-end ``` and ``` front-end ``` directories by running the following command
 ```bash
    npm install
 ```
-5. To start the app you need to run the following command in both the ``` back-end ``` and ``` front-end ``` directories
+**5.** To start the app you need to run the following command in both the ``` back-end ``` and ``` front-end ``` directories
 ```bash
    npm start
 ```

@@ -3,44 +3,37 @@ set -euo pipefail
 
 STEP=1
 
-if command -v python3 >/dev/null 2>&1; then
-  PYTHON_BIN="python3"
-elif command -v python >/dev/null 2>&1; then
+if command -v python >/dev/null 2>&1; then
   PYTHON_BIN="python"
+elif command -v python3 >/dev/null 2>&1; then
+  PYTHON_BIN="python3"
 else
-  echo "Error: python3/python not found in PATH."
+  echo "Error: python/python3 not found in PATH."
   exit 1
 fi
 
 CLI=("$PYTHON_BIN" "se2525")
 SOURCE_CSV="../back-end/data/points.csv"
 
-# Generate timestamps exactly as requested:
-# every S is current time, every E is current time + 40m
-readarray -t TIME_VALUES < <("$PYTHON_BIN" - <<'PY'
-from datetime import datetime, timedelta
+# Generate timestamps as requested:
+# S1=now-40m, E1=now, S2=now+1m, E2=S2+40m
+PY_CODE='from datetime import datetime, timedelta; now=datetime.now().replace(second=0,microsecond=0); s1=(now-timedelta(minutes=40)).strftime("%Y-%m-%d %H:%M"); e1=now.strftime("%Y-%m-%d %H:%M"); s2=(now+timedelta(minutes=1)).strftime("%Y-%m-%d %H:%M"); e2=(now+timedelta(minutes=41)).strftime("%Y-%m-%d %H:%M"); d=now.strftime("%Y%m%d"); print(s1); print(e1); print(s2); print(e2); print(d)'
 
-now = datetime.now().replace(second=0, microsecond=0)
-s1 = now
-e1 = now + timedelta(minutes=40)
-s2 = now
-e2 = now + timedelta(minutes=40)
+if ! TIME_OUTPUT=$("$PYTHON_BIN" -c "$PY_CODE"); then
+  echo "Error: failed to generate timestamps with $PYTHON_BIN"
+  exit 1
+fi
 
-def fmt(dt):
-    return dt.strftime("%Y-%m-%d %H:%M")
+# Strip CR on Windows and split lines safely.
+TIME_OUTPUT=$(printf '%s' "$TIME_OUTPUT" | tr -d '\r')
+mapfile -t TIME_VALUES <<< "$TIME_OUTPUT"
 
-print(fmt(s1))
-print(fmt(e1))
-print(fmt(s2))
-print(fmt(e2))
-print(now.strftime("%Y%m%d"))
-PY
-)
-
-# On Windows Python, readarray may keep trailing '\r'. Strip it.
-for i in "${!TIME_VALUES[@]}"; do
-  TIME_VALUES[$i]="${TIME_VALUES[$i]%$'\r'}"
-done
+if [[ ${#TIME_VALUES[@]} -lt 5 ]]; then
+  echo "Error: could not parse generated timestamps."
+  echo "Raw output was:"
+  printf '%s\n' "$TIME_OUTPUT"
+  exit 1
+fi
 
 S1="${TIME_VALUES[0]}"
 E1="${TIME_VALUES[1]}"

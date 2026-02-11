@@ -42,6 +42,24 @@ exports.insertChargingSession = async ({
 
   const licensePlates = vehicleRes.rows[0].license_plates;
 
+  await pool.query(
+    `
+    UPDATE charger
+    SET status = 'charging'
+    WHERE charger_id = $1
+    `,
+    [chargerId]
+  );
+
+  await pool.query(
+    `
+    INSERT INTO charger_status_history
+    (charger_id, old_status, new_status)
+    VALUES ($1, $2, $3);
+    `,
+    [chargerId, currentStatus, 'charging']
+  );
+
   // 3) Insert into charging table (mapping fields)
   await pool.query(
     `
@@ -69,7 +87,7 @@ exports.insertChargingSession = async ({
   await pool.query(
     `
     UPDATE charger
-    SET status = 'charging'
+    SET status = 'available'
     WHERE charger_id = $1
     `,
     [chargerId]
@@ -81,6 +99,6 @@ exports.insertChargingSession = async ({
     (charger_id, old_status, new_status)
     VALUES ($1, $2, $3);
     `,
-    [chargerId, currentStatus, 'charging']
+    [chargerId, 'charging', 'available']
   );
 };

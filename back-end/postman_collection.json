@@ -533,6 +533,8 @@
         "packages": {},
         "requests": {},
         "exec": [
+          "pm.collectionVariables.set(\"id\", \"1\");\r",
+          "\r",
           "function formatDateTime(d) {\r",
           "  const year = d.getFullYear();\r",
           "  const month = String(d.getMonth() + 1).padStart(2, '0');\r",

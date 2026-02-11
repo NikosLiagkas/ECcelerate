@@ -54,10 +54,10 @@ exports.insertChargingSession = async ({
   await pool.query(
     `
     INSERT INTO charger_status_history
-    (charger_id, old_status, new_status)
-    VALUES ($1, $2, $3);
+    (charger_id, old_status, new_status, changed_at)
+    VALUES ($1, $2, $3, $4);
     `,
-    [chargerId, currentStatus, 'charging']
+    [chargerId, currentStatus, 'charging', starttime]
   );
 
   // 3) Insert into charging table (mapping fields)
@@ -96,9 +96,9 @@ exports.insertChargingSession = async ({
   await pool.query(
     `
     INSERT INTO charger_status_history
-    (charger_id, old_status, new_status)
-    VALUES ($1, $2, $3);
+    (charger_id, old_status, new_status, changed_at)
+    VALUES ($1, $2, $3, $4);
     `,
-    [chargerId, 'charging', 'available']
+    [chargerId, 'charging', 'available', endtime]
   );
 };

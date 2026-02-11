@@ -10,9 +10,10 @@ const ApiError = require("../utils/ApiError");
 exports.resetpoints = async (req, res) => {
 
     try {   
+        let stations;
         try {
             const raw = fs.readFileSync(RESET_FILE, "utf8");
-            const stations = JSON.parse(raw);
+            stations = JSON.parse(raw);
         } catch (e) {
             throw new ApiError(400, "Invalid JSON file", e.message);
         }

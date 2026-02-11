@@ -11,7 +11,7 @@ exports.points = async (req, res) => {
 
     if (!["json", "csv"].includes(format)) {
       throw new ApiError(400, "Invalid format", "Allowed: json, csv");
-  }
+    }
 
     if (point_status === undefined || point_status === "") {
       point_status = "";

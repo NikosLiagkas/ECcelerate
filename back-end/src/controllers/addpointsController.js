@@ -16,7 +16,8 @@ exports.addChargers = async (req, res) => {
         
         const mime = req.file.mimetype || "";
 
-        if (!mime.startsWith("text/csv")) {
+        // Windows MIME type for CSV is vnd.ms-excel
+        if (!(mime.startsWith("text/csv") || mime === "application/vnd.ms-excel")) {
             throw new ApiError(400, `Invalid MIME type: ${mime}`, "MIME type has to be text/csv");
         }
 

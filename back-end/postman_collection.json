@@ -1,0 +1,467 @@
+{
+  "info": {
+    "_postman_id": "d31e4f4e-bbe9-4f4c-a7b0-3f9734fe4b10",
+    "name": "softeng2525",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52280966",
+    "_collection_link": "https://go.postman.co/collection/52280966-d31e4f4e-bbe9-4f4c-a7b0-3f9734fe4b10?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "healthcheck",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "resetpoints",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9876/api/admin/resetpoints",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "admin",
+            "resetpoints"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "addpoints",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "uuid": "fd3b4db3-bb94-4978-a36e-da59cf4ec6bb",
+              "src": "postman-cloud:///1f106d12-6b4a-4320-80b3-b7dc9f118344"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:9876/api/admin/addpoints",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "admin",
+            "addpoints"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "available_points",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9876/api/points?status=available",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "points"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "available"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "charging_points",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "offline_points",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9876/api/points?status=offline",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "points"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "offline",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "point",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "reserve",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9876/api/reserve/{{id}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "reserve",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "reserved_points",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9876/api/points?status=reserved",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "points"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "reserved"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "point",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9876/api/point/{{id}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "point",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "updpoint",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"status\": \"available\",\r\n  \"kwhprice\": 0.55\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9876/api/updpoint/{{id}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "updpoint",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "point",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9876/api/point/{{id}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "point",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "reserve",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9876/api//charge/reserve/{{id}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "",
+            "charge",
+            "reserve",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "reserved_points",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9876/api/points?status=reserved",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "points"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "reserved"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "newsession",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n \"id\": 1,\r\n \"starttime\": \"2026-02-11 01:52\",\r\n \"endtime\": \"2026-02-11 01:55\",\r\n \"startsoc\": 20,\r\n \"endsoc\": 40,\r\n \"totalkwh\": 10.00,\r\n \"kwhprice\": 0.50,\r\n \"Amount\": 5.00\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9876/api/newsession",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "newsession"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "pointstatus",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "point",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "newsession",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n \"id\": 1,\r\n \"starttime\": \"2026-02-11 01:07\",\r\n \"endtime\": \"2026-02-11 01:08\",\r\n \"startsoc\": 20,\r\n \"endsoc\": 40,\r\n \"totalkwh\": 10.00,\r\n \"kwhprice\": 0.50,\r\n \"Amount\": 5.00\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9876/api/newsession",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "newsession"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "sessions",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n \"id\": 1,\r\n \"starttime\": \"2026-02-11 01:07\",\r\n \"endtime\": \"2026-02-11 01:08\",\r\n \"startsoc\": 20,\r\n \"endsoc\": 40,\r\n \"totalkwh\": 10.00,\r\n \"kwhprice\": 0.50,\r\n \"Amount\": 5.00\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:9876/api/sessions/{{id}}/20251102/20261102",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "sessions",
+            "{{id}}",
+            "20251102",
+            "20261102"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "pointstatus",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9876/api/pointstatus/{{id}}/20251102/20261103",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "pointstatus",
+            "{{id}}",
+            "20251102",
+            "20261103"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "id",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}

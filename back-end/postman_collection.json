@@ -11,7 +11,20 @@
       "name": "healthcheck",
       "request": {
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9876/api/admin/healthcheck",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "admin",
+            "healthcheck"
+          ]
+        }
       },
       "response": []
     },
@@ -69,6 +82,27 @@
       "response": []
     },
     {
+      "name": "healthcheck",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9876/api/admin/healthcheck",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "admin",
+            "healthcheck"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
       "name": "available_points",
       "request": {
         "method": "GET",
@@ -98,7 +132,26 @@
       "name": "charging_points",
       "request": {
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9876/api/points?status=charging",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "points"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "charging",
+              "type": "text"
+            }
+          ]
+        }
       },
       "response": []
     },
@@ -133,7 +186,20 @@
       "name": "point",
       "request": {
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9876/api/point/{{id}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "point",
+            "{{id}}"
+          ]
+        }
       },
       "response": []
     },
@@ -212,7 +278,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"status\": \"available\",\r\n  \"kwhprice\": 0.55\r\n}\r\n",
+          "raw": "{\r\n  \"status\": \"available\",\r\n  \"kwhprice\": 0.50\r\n}\r\n",
           "options": {
             "raw": {
               "language": "json"
@@ -259,10 +325,10 @@
     {
       "name": "reserve",
       "request": {
-        "method": "GET",
+        "method": "POST",
         "header": [],
         "url": {
-          "raw": "http://localhost:9876/api//charge/reserve/{{id}}",
+          "raw": "http://localhost:9876/api/reserve/{{id}}",
           "protocol": "http",
           "host": [
             "localhost"
@@ -270,8 +336,6 @@
           "port": "9876",
           "path": [
             "api",
-            "",
-            "charge",
             "reserve",
             "{{id}}"
           ]
@@ -312,7 +376,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n \"id\": 1,\r\n \"starttime\": \"2026-02-11 01:52\",\r\n \"endtime\": \"2026-02-11 01:55\",\r\n \"startsoc\": 20,\r\n \"endsoc\": 40,\r\n \"totalkwh\": 10.00,\r\n \"kwhprice\": 0.50,\r\n \"Amount\": 5.00\r\n}",
+          "raw": "{\r\n \"id\": 1,\r\n \"starttime\": \"{{S1}}\",\r\n \"endtime\": \"{{E1}}\",\r\n \"startsoc\": 20,\r\n \"endsoc\": 40,\r\n \"totalkwh\": 10.00,\r\n \"kwhprice\": 0.50,\r\n \"Amount\": 5.00\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -338,7 +402,22 @@
       "name": "pointstatus",
       "request": {
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9876/api/pointstatus/{{id}}/{{S1_DATE}}/{{E1_DATE}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "pointstatus",
+            "{{id}}",
+            "{{S1_DATE}}",
+            "{{E1_DATE}}"
+          ]
+        }
       },
       "response": []
     },
@@ -346,7 +425,20 @@
       "name": "point",
       "request": {
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9876/api/point/{{id}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9876",
+          "path": [
+            "api",
+            "point",
+            "{{id}}"
+          ]
+        }
       },
       "response": []
     },
@@ -357,7 +449,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n \"id\": 1,\r\n \"starttime\": \"2026-02-11 01:07\",\r\n \"endtime\": \"2026-02-11 01:08\",\r\n \"startsoc\": 20,\r\n \"endsoc\": 40,\r\n \"totalkwh\": 10.00,\r\n \"kwhprice\": 0.50,\r\n \"Amount\": 5.00\r\n}",
+          "raw": "{\r\n \"id\": 1,\r\n \"starttime\": \"{{S2}}\",\r\n \"endtime\": \"{{E2}}\",\r\n \"startsoc\": 20,\r\n \"endsoc\": 40,\r\n \"totalkwh\": 10.00,\r\n \"kwhprice\": 0.50,\r\n \"Amount\": 5.00\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -392,7 +484,7 @@
           "raw": "{\r\n \"id\": 1,\r\n \"starttime\": \"2026-02-11 01:07\",\r\n \"endtime\": \"2026-02-11 01:08\",\r\n \"startsoc\": 20,\r\n \"endsoc\": 40,\r\n \"totalkwh\": 10.00,\r\n \"kwhprice\": 0.50,\r\n \"Amount\": 5.00\r\n}"
         },
         "url": {
-          "raw": "http://localhost:9876/api/sessions/{{id}}/20251102/20261102",
+          "raw": "http://localhost:9876/api/sessions/{{id}}/{{S1_DATE}}/{{E2_DATE}}",
           "protocol": "http",
           "host": [
             "localhost"
@@ -402,8 +494,8 @@
             "api",
             "sessions",
             "{{id}}",
-            "20251102",
-            "20261102"
+            "{{S1_DATE}}",
+            "{{E2_DATE}}"
           ]
         }
       },
@@ -415,7 +507,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:9876/api/pointstatus/{{id}}/20251102/20261103",
+          "raw": "http://localhost:9876/api/pointstatus/{{id}}/{{S1_DATE}}/{{E2_DATE}}",
           "protocol": "http",
           "host": [
             "localhost"
@@ -425,8 +517,8 @@
             "api",
             "pointstatus",
             "{{id}}",
-            "20251102",
-            "20261103"
+            "{{S1_DATE}}",
+            "{{E2_DATE}}"
           ]
         }
       },
@@ -441,6 +533,40 @@
         "packages": {},
         "requests": {},
         "exec": [
+          "function formatDateTime(d) {\r",
+          "  const year = d.getFullYear();\r",
+          "  const month = String(d.getMonth() + 1).padStart(2, '0');\r",
+          "  const day = String(d.getDate()).padStart(2, '0');\r",
+          "  const hours = String(d.getHours()).padStart(2, '0');\r",
+          "  const mins = String(d.getMinutes()).padStart(2, '0');\r",
+          "  return `${year}-${month}-${day} ${hours}:${mins}`;\r",
+          "}\r",
+          "\r",
+          "function yyyymmdd(d) {\r",
+          "  const year = d.getFullYear();\r",
+          "  const month = String(d.getMonth() + 1).padStart(2, '0');\r",
+          "  const day = String(d.getDate()).padStart(2, '0');\r",
+          "  return `${year}${month}${day}`;\r",
+          "}\r",
+          "\r",
+          "const now = new Date();\r",
+          "\r",
+          "const S1 = new Date(now.getTime() + 30 * 60 * 1000); \r",
+          "const E1 = new Date(S1.getTime() + 40 * 60 * 1000); \r",
+          "const S2 = new Date(E1.getTime() + 1 * 60 * 1000);  \r",
+          "const E2 = new Date(S2.getTime() + 40 * 60 * 1000);\r",
+          "\r",
+          "pm.collectionVariables.set(\"S1\", formatDateTime(S1));\r",
+          "pm.collectionVariables.set(\"E1\", formatDateTime(E1));\r",
+          "pm.collectionVariables.set(\"S2\", formatDateTime(S2));\r",
+          "pm.collectionVariables.set(\"E2\", formatDateTime(E2));\r",
+          "\r",
+          "// date only\r",
+          "pm.collectionVariables.set(\"S1_DATE\", yyyymmdd(S1));\r",
+          "pm.collectionVariables.set(\"E1_DATE\", yyyymmdd(E1));\r",
+          "pm.collectionVariables.set(\"S2_DATE\", yyyymmdd(S2));\r",
+          "pm.collectionVariables.set(\"E2_DATE\", yyyymmdd(E2));\r",
+          "\r",
           ""
         ]
       }
@@ -460,8 +586,39 @@
   "variable": [
     {
       "key": "id",
-      "value": "",
-      "type": "default"
+      "value": ""
+    },
+    {
+      "key": "S1",
+      "value": ""
+    },
+    {
+      "key": "E1",
+      "value": ""
+    },
+    {
+      "key": "S2",
+      "value": ""
+    },
+    {
+      "key": "E2",
+      "value": ""
+    },
+    {
+      "key": "S1_DATE",
+      "value": ""
+    },
+    {
+      "key": "E1_DATE",
+      "value": ""
+    },
+    {
+      "key": "S2_DATE",
+      "value": ""
+    },
+    {
+      "key": "E2_DATE",
+      "value": ""
     }
   ]
 }

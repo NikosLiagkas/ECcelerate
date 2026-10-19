@@ -20,7 +20,7 @@ The platform is implemented using a RESTful architecture, ensuring secure commun
 # Setup
 **1.** Clone our GitHub repository using the command:
 ```bash
-   git clone https://github.com/ntua/softeng25-25 
+   git clone [https://github.com/ntua/softeng25-25 ](https://github.com/NikosLiagkas/ECcelerate.git)
 ```
 **2.** The database can be set up by running the code in [mySchema.sql](https://github.com/ntua/softeng25-25/blob/main/back-end/data/mySchema.sql) and importing the already generated data from the CSVs in the [data folder](https://github.com/ntua/softeng25-25/tree/main/back-end/data). Optionally, if you want to generate your own data, you can use [myDataGenerator.py](https://github.com/ntua/softeng25-25/blob/main/back-end/data/myDataGenerator.py), which contains instructions at the end of the file.
 
